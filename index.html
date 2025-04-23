@@ -863,48 +863,44 @@
       });
       
       // Gestion du formulaire de contact
-      const contactForm = document.getElementById('contactForm');
-      const formStatus = document.getElementById('formStatus');
-      
-      contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.innerHTML;
-        
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-        submitBtn.disabled = true;
-        
-        try {
-          const formData = new FormData(contactForm);
-          const response = await fetch(contactForm.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-              'Accept': 'application/json'
-            }
-          });
-          
-          if (response.ok) {
-            formStatus.innerHTML = '<p style="color: var(--primary);">Message envoyé avec succès ! Je vous répondrai dès que possible.</p>';
-            contactForm.reset();
-          } else {
-            throw new Error('Erreur lors de l\'envoi du message');
-          }
-        } catch (error) {
-          formStatus.innerHTML = `<p style="color: var(--secondary);">Une erreur est survenue. Veuillez réessayer ou me contacter directement par email.</p>`;
-          console.error('Error:', error);
-        } finally {
-          submitBtn.innerHTML = originalBtnText;
-          submitBtn.disabled = false;
-          
-          // Effacer le message après 5 secondes
-          setTimeout(() => {
-            formStatus.innerHTML = '';
-          }, 5000);
-        }
-      });
-      
+      document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+  submitBtn.disabled = true;
+
+  try {
+    const formData = new FormData(this);
+    const response = await fetch(this.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+      alert('Message envoyé avec succès !');
+      this.reset();
+    } else {
+      // Afficher les erreurs spécifiques de Formspree
+      if (result.errors) {
+        const errorMsg = Object.values(result.errors).join(', ');
+        alert(`Erreur: ${errorMsg}`);
+      } else {
+        throw new Error(result.error || 'Erreur inconnue');
+      }
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+    alert(`Erreur: ${error.message}`);
+  } finally {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+});
       // Mettre à jour l'année dans le footer
       document.getElementById('year').textContent = new Date().getFullYear();
       
