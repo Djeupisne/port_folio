@@ -1,57 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Merci !</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: "Poppins", sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: #f8f9fa;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        max-width: 600px;
-        padding: 2rem;
-      }
-      h1 {
-        color: #4361ee;
-        margin-bottom: 1rem;
-      }
-      p {
-        color: #6c757d;
-        margin-bottom: 2rem;
-      }
-      a {
-        color: #f72585;
-        text-decoration: none;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        border: 2px solid #f72585;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-      }
-      a:hover {
-        background: #f72585;
-        color: white;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Merci pour votre message !</h1>
-      <p>Je vous répondrai dans les plus brefs délais.</p>
-      <a href="/">Retour à l'accueil</a>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message envoyé | Portfolio DJEUPISNE Oualoumi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+    }
+    h1 {
+      color: #4361ee;
+      margin-bottom: 20px;
+    }
+    p {
+      color: #6c757d;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #4361ee;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background: #3a0ca3;
+      transform: translateY(-2px);
+    }
+    .checkmark {
+      font-size: 60px;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="checkmark">
+      <i class="fas fa-check-circle"></i>
     </div>
-  </body>
+    <h1>Message envoyé avec succès !</h1>
+    <p>Je vous répondrai dans les plus brefs délais.</p>
+    <a href="/" class="btn">
+      <i class="fas fa-arrow-left"></i> Retour à l'accueil
+    </a>
+  </div>
+
+  <!-- Font Awesome pour l'icône -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
 </html>
