@@ -598,7 +598,27 @@
       
       .fade-in {
         animation: fadeIn 0.8s ease forwards;
-      }
+      }   
+      .alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border: 1px solid #28a745;
+}
+
+.alert-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
     </style>
   </head>
   <body>
@@ -757,11 +777,11 @@
       </div>
       
       <div class="contact-form" data-aos="fade-left" data-aos-delay="100">
-        <form id="contactForm" action="https://formsubmit.co/el/oualoumi" method="POST">
+        form id="contactForm" action="https://formsubmit.co/el/your-unique-id" method="POST">
   <input type="hidden" name="_next" value="https://djeupisne.vercel.app/merci.html">
   <input type="hidden" name="_subject" value="Nouveau message portfolio">
   <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_autoresponse" value="Merci pour votre message. Je vous répondrai rapidement.">
+  <input type="hidden" name="_captcha" value="false">
   <input type="text" name="_honey" style="display:none">
           
           <div class="form-group">
@@ -828,63 +848,72 @@
     });
 
     // Gestion du formulaire de contact
-    document.getElementById('contactForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const form = e.target;
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      const statusElement = document.getElementById('formStatus');
-      
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-      submitBtn.disabled = true;
-      statusElement.innerHTML = '';
+   document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  const statusElement = document.getElementById('formStatus');
+  
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+  submitBtn.disabled = true;
+  statusElement.innerHTML = '';
 
-      try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        const result = await response.json();
-        
-        if (response.ok) {
-          // Redirection vers la page de remerciement
-          if (form.querySelector('input[name="_next"]').value) {
-            window.location.href = form.querySelector('input[name="_next"]').value;
-          } else {
-            statusElement.innerHTML = `
-              <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i> Message envoyé avec succès !
-              </div>
-            `;
-            form.reset();
-          }
-        } else {
-          let errorMessage = "Erreur lors de l'envoi du message";
-          if (result.errors) {
-            errorMessage = Object.values(result.errors).join(', ');
-          } else if (result.message) {
-            errorMessage = result.message;
-          }
-          throw new Error(errorMessage);
-        }
-      } catch (error) {
-        console.error('Erreur détaillée:', error);
-        statusElement.innerHTML = `
-          <div class="alert alert-error">
-            <i class="fas fa-exclamation-circle"></i> ${error.message || 'Une erreur est survenue'}
-          </div>
-        `;
-      } finally {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+  try {
+    const formData = new FormData(form);
+    
+    // Option 1: Utilisation de FormSubmit
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
       }
     });
+
+    // Gestion spécifique pour FormSubmit
+    if (response.redirected) {
+      window.location.href = response.url;
+      return;
+    }
+
+    const contentType = response.headers.get('content-type');
+    let result;
+    
+    if (contentType && contentType.includes('application/json')) {
+      result = await response.json();
+    } else {
+      const text = await response.text();
+      throw new Error(text || 'Réponse inattendue du serveur');
+    }
+
+    if (response.ok) {
+      if (result.redirect) {
+        window.location.href = result.redirect;
+      } else {
+        statusElement.innerHTML = `
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> Message envoyé avec succès !
+          </div>
+        `;
+        form.reset();
+      }
+    } else {
+      throw new Error(result.message || 'Erreur lors de l\'envoi');
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+    statusElement.innerHTML = `
+      <div class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> ${error.message || 'Une erreur est survenue'}
+      </div>
+    `;
+  } finally {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+});
       // Gestion du thème sombre/clair
       const themeToggle = document.querySelector('.theme-toggle');
       const themeIcon = themeToggle.querySelector('i');
