@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emploi du Temps - Génie Informatique</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #3f51b5;
+        --primary-dark: #303f9f;
+        --primary-light: #c5cae9;
+        --accent: #ff4081;
+        --text-primary: #212121;
+        --text-secondary: #757575;
+        --divider: #e0e0e0;
+        --background: #f5f5f5;
+        --white: #ffffff;
+        --success: #4caf50;
+        --warning: #ff9800;
+        --info: #2196f3;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      /* Barre de navigation horizontale en haut */
+      .top-nav {
+        background: var(--primary-dark);
+        color: var(--white);
+        padding: 0 30px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+
+      .logo i {
+        margin-right: 10px;
+        font-size: 1.4rem;
+      }
+
+      .nav-links {
+        display: flex;
+        height: 100%;
+      }
+
+      .nav-links a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        background: rgba(255, 255, 255, 0.1);
+        border-bottom: 3px solid var(--accent);
+      }
+
+      .nav-links a i {
+        margin-right: 8px;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 2px solid var(--white);
+      }
+
+      .user-avatar i {
+        color: var(--primary-dark);
+        font-size: 1.1rem;
+      }
+
+      /* Contenu principal */
+      .content {
+        padding: 30px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      header h1 {
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+      }
+
+      header h1 i {
+        margin-right: 15px;
+        color: var(--primary);
+      }
+
+      .btn-deconnexion {
+        background: var(--accent);
+        color: var(--white);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-deconnexion:hover {
+        background: #e91e63;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-deconnexion i {
+        margin-right: 8px;
+      }
+
+      /* Statistiques améliorées */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat {
+        background: var(--white);
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid var(--primary);
+      }
+
+      .stat:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+      }
+
+      .stat h2 {
+        color: var(--primary-dark);
+        margin: 10px 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .stat:nth-child(2) {
+        border-left-color: var(--success);
+      }
+
+      .stat:nth-child(3) {
+        border-left-color: var(--info);
+      }
+
+      /* Emploi du temps amélioré */
+      .timetable {
+        background: var(--white);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+      }
+
+      .timetable h2 {
+        color: var(--primary-dark);
+        margin-bottom: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+      }
+
+      .timetable h2 i {
+        margin-right: 10px;
+        color: var(--primary);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 15px;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        background: var(--primary-dark);
+        color: var(--white);
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 70px; /* Pour tenir compte de la hauteur de la navbar */
+      }
+
+      th:first-child {
+        border-top-left-radius: 8px;
+      }
+
+      th:last-child {
+        border-top-right-radius: 8px;
+      }
+
+      td {
+        padding: 14px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--divider);
+        vertical-align: middle;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover td {
+        background: rgba(63, 81, 181, 0.05);
+      }
+
+      .pause {
+        background: #fff8e1;
+        font-weight: 600;
+        text-align: center;
+        color: #ff8f00;
+      }
+
+      .btn-print {
+        background: var(--primary);
+        color: var(--white);
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        margin: 25px 0 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-print:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-print i {
+        margin-right: 8px;
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .top-nav {
+          padding: 0 15px;
+          height: 60px;
+        }
+
+        .nav-links a span {
+          display: none;
+        }
+
+        .nav-links a {
+          padding: 0 15px;
+        }
+
+        .nav-links a i {
+          margin-right: 0;
+          font-size: 1.2rem;
+        }
+
+        .user-name {
+          display: none;
+        }
+
+        .content {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Barre de navigation en haut -->
+    <nav class="top-nav">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Université</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#"><i class="fas fa-home"></i> <span>Accueil</span></a>
+        <a href="#"><i class="fas fa-file-alt"></i> <span>Notes</span></a>
+        <a href="#" class="active"
+          ><i class="fas fa-calendar-alt"></i> <span>Emploi du temps</span></a
+        >
+        <a href="#"><i class="fas fa-book"></i> <span>Cours</span></a>
+      </div>
+
+      <div class="user-profile">
+        <span class="user-name">Abdoulaye Sidick</span>
+        <div class="user-avatar">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+      </div>
+    </nav>
+
+    <div class="content">
+      <header>
+        <h1><i class="far fa-calendar-alt"></i> Emploi du temps</h1>
+        <button class="btn-deconnexion">
+          <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </button>
+      </header>
+      <section class="stats">
+        <div class="stat">
+          <p><i class="far fa-calendar-check"></i> JOURS DE COURS</p>
+          <h2>5</h2>
+          <p>Lundi à Vendredi</p>
+        </div>
+        <div class="stat">
+          <p><i class="fas fa-chalkboard-teacher"></i> COURS CETTE SEMAINE</p>
+          <h2>20</h2>
+          <p>SEANCES PROGRAMMÉES</p>
+        </div>
+        <div class="stat">
+          <p><i class="fas fa-university"></i> DÉPARTEMENT</p>
+          <h2>Génie Info</h2>
+          <p>Promotion 2023-2024</p>
+        </div>
+      </section>
+      <section class="timetable">
+        <h2><i class="fas fa-table"></i> Planning hebdomadaire</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Jours</th>
+              <th>Horaires</th>
+              <th>Matières</th>
+              <th>Nature</th>
+              <th>Salle/Amphi</th>
+              <th>Enseignant</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lundi</strong></td>
+              <td>7h30-9h30</td>
+              <td>Électronique Analogique</td>
+              <td>ET</td>
+              <td>Labo info</td>
+              <td>Pr Yaya Dagal</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>9h45-12h45</td>
+              <td>Administration Réseaux</td>
+              <td>TP</td>
+              <td>Labo info</td>
+              <td>Dr Mahamat Habib Ibrahim</td>
+            </tr>
+            <tr class="pause">
+              <td colspan="6">
+                <i class="fas fa-utensils"></i> Pause déjeuner
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>13h45-15h45</td>
+              <td>Administration Réseaux</td>
+              <td>TP</td>
+              <td>Labo info</td>
+              <td>Dr Mahamat Habib Ibrahim</td>
+            </tr>
+            <tr>
+              <td><strong>Mardi</strong></td>
+              <td>8h00-10h00</td>
+              <td>Programmation Avancée</td>
+              <td>Cours</td>
+              <td>Amphi B</td>
+              <td>Dr Aïcha Ousmane</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>10h15-12h15</td>
+              <td>Base de Données</td>
+              <td>TD</td>
+              <td>Salle 204</td>
+              <td>Pr Hassan Abdoul</td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn-print"><i class="fas fa-print"></i> Imprimer</button>
+      </section>
+    </div>
+  </body>
+</html>
