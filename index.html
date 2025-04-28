@@ -51,15 +51,11 @@
             background-color: var(--bg-color);
             transition: background-color 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
         
-        /* [Tous vos autres styles CSS restent inchangés] */
-        /* ... */
-        
+        /* [Tous vos autres styles CSS] */
+        /* ... (conservez tous vos styles existants) ... */
+
         /* Style pour le message de protection */
         .protection-overlay {
             position: fixed;
@@ -67,7 +63,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.8);
             color: white;
             display: flex;
             justify-content: center;
@@ -85,31 +81,24 @@
             margin-bottom: 1.5rem;
             color: #f72585;
         }
-        
-        /* Autoriser la sélection sur les éléments éditable */
-        input, textarea, [contenteditable] {
-            user-select: text !important;
-            -webkit-user-select: text !important;
-            -moz-user-select: text !important;
-            -ms-user-select: text !important;
-        }
     </style>
 </head>
 <body>
-    <!-- [Tous vos éléments HTML restent inchangés] -->
+    <!-- Votre portfolio complet ici -->
+    <!-- [Conservez tout votre contenu HTML existant] -->
     <!-- ... -->
-    
-    <!-- Overlay de protection -->
+
+    <!-- Overlay de protection (masqué par défaut) -->
     <div class="protection-overlay">
         <i class="fas fa-lock"></i>
         <h2>Action non autorisée</h2>
-        <p>L'inspection de ce portfolio est désactivée pour des raisons de protection.</p>
+        <p>L'inspection de ce portfolio est désactivée.</p>
     </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // PROTECTION DISCRÈTE DU PORTFOLIO
+        // PROTECTION NON INTRUSIVE
         (function() {
             // Éléments du DOM
             const overlay = document.querySelector('.protection-overlay');
@@ -122,10 +111,10 @@
                 }, 2000);
             }
             
-            // 1. Empêcher le clic droit (sans bloquer l'interface)
+            // 1. Empêcher le clic droit
             document.addEventListener('contextmenu', function(e) {
                 // Autoriser le clic droit sur les éléments de formulaire
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
                     return true;
                 }
                 e.preventDefault();
@@ -147,18 +136,7 @@
                 }
             });
             
-            // 3. Empêcher la copie (sans bloquer les champs de formulaire)
-            document.addEventListener('copy', function(e) {
-                // Autoriser la copie dans les champs de formulaire
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    return true;
-                }
-                e.preventDefault();
-                showProtectionMessage();
-                return false;
-            });
-            
-            // 4. Détection des outils de développement (discrète)
+            // 3. Détection des outils de développement
             let devtoolsOpen = false;
             const threshold = 160;
             
@@ -174,22 +152,14 @@
                 }
             }, 500);
             
-            // 5. Protection contre les iframes
+            // 4. Protection contre les iframes
             if (window.self !== window.top) {
                 window.top.location = window.self.location;
             }
             
-            // 6. Empêcher le glisser-déposer des images
-            document.querySelectorAll('img').forEach(img => {
-                img.addEventListener('dragstart', (e) => {
-                    e.preventDefault();
-                    return false;
-                });
-            });
-            
         })();
         
-        // [Le reste de vos scripts existants reste inchangé]
+        // [Le reste de vos scripts existants]
         // Initialisation AOS
         AOS.init({
             duration: 800,
@@ -223,90 +193,9 @@
             }
         });
         
-        // Gestion du bouton "Retour en haut"
-        const backToTopBtn = document.querySelector('.back-to-top');
+        // [Le reste de vos fonctions JavaScript]
+        // ... (conservez toutes vos autres fonctions)
         
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('active');
-            } else {
-                backToTopBtn.classList.remove('active');
-            }
-        });
-        
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-        
-        // Gestion du formulaire de contact
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            const statusElement = document.getElementById('formStatus');
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-            submitBtn.disabled = true;
-            statusElement.innerHTML = '';
-
-            try {
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    statusElement.innerHTML = `
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
-                        </div>
-                    `;
-                    form.reset();
-                } else {
-                    throw new Error("Erreur lors de l'envoi");
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                statusElement.innerHTML = `
-                    <div class="alert alert-error">
-                        <i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Essayez de m'envoyer un email directement à <a href="mailto:oualoumidjeupisne@gmail.com">oualoumidjeupisne@gmail.com</a>
-                    </div>
-                `;
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-        
-        // Mettre à jour l'année dans le footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-        
-        // Animation fluide pour les liens d'ancrage
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
     </script>
 </body>
 </html>
