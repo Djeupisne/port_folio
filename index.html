@@ -998,46 +998,42 @@
     </div>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        console.log('%c⚠️ Ce portfolio est protégé. Toute tentative de copie ou d\'inspection non autorisée est interdite.', 'color: red; font-size: 16px; font-weight: bold; valor: disabled;');
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-        document.addEventListener('keydown', function(e) {
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-                (e.ctrlKey && e.key === 'U')
-            ) {
-                e.preventDefault();
-                document.documentElement.setAttribute('devtools', '');
-                document.body.innerHTML = '<h1>Accès non autorisé</h1>';
-                setTimeout(() => {
-                    window.location.href = 'about:blank';
-                }, 1000);
-            }
-        });
-        function detectDevTools() {
-            const threshold = 150;
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            if (widthDiff > threshold || heightDiff > threshold) {
-                document.documentElement.setAttribute('devtools', '');
-                document.body.innerHTML = '<h1>Accès non autorisé</h1>';
-                setTimeout(() => {
-                    window.location.href = 'about:blank';
-                }, 500);
-            } else {
-                document.documentElement.removeAttribute('devtools');
-            }
-        }
-        setInterval(detectDevTools, 250);
-        window.addEventListener('resize', detectDevTools);
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
-        });
+       // Ajouter à votre balise <script> existante
+document.addEventListener('keydown', function(e) {
+    if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+        (e.ctrlKey && e.key === 'U')
+    ) {
+        e.preventDefault();
+        document.documentElement.setAttribute('devtools', '');
+        document.body.innerHTML = '<h1>Accès non autorisé</h1>';
+        setTimeout(() => {
+            window.location.href = 'about:blank';
+        }, 500);
+    }
+});
+
+// Détection des outils de développement
+function detectDevTools() {
+    const threshold = 150;
+    const widthDiff = window.outerWidth - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
+    if (widthDiff > threshold || heightDiff > threshold) {
+        document.documentElement.setAttribute('devtools', '');
+        document.body.innerHTML = '<h1>Accès non autorisé</h1>';
+        setTimeout(() => {
+            window.location.href = 'about:blank';
+        }, 500);
+    } else {
+        document.documentElement.removeAttribute('devtools');
+    }
+}
+setInterval(detectDevTools, 250);
+window.addEventListener('resize', detectDevTools);
+
+// Message dissuasif dans la console
+console.log('%c⚠️ Ce portfolio est protégé. Toute tentative de copie ou d\'inspection non autorisée est interdite.', 'color: red; font-size: 16px; font-weight: bold;');
         const themeToggle = document.querySelector('.theme-toggle');
         const themeIcon = themeToggle.querySelector('i');
         const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
