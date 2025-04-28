@@ -23,63 +23,48 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // PROTECTION RENFORCÉE CONTRE L'INSPECTION
-        (function() {
-            // Fonction de redirection vers une page vide
-            function blockInspection() {
-                window.location.href = 'about:blank';
-                document.body.innerHTML = '';
-                document.head.innerHTML = '';
-                window.stop();
-                return false;
-            }
+// PROTECTION MODIFIÉE POUR REDIRECTION APRÈS CTRL+U
+(function() {
+    // Fonction de redirection vers une page vide
+    function redirectToBlank() {
+        // Petit délai pour laisser le temps à l'inspecteur de s'ouvrir
+        setTimeout(() => {
+            window.location.href = 'about:blank';
+        }, 100);
+    }
 
-            // Empêcher le clic droit
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                blockInspection();
-                return false;
-            });
+    // Intercepter spécifiquement Ctrl+U
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            // Laisser l'inspecteur s'ouvrir puis rediriger
+            redirectToBlank();
+            return false;
+        }
+    });
 
-            // Empêcher les raccourcis clavier (Ctrl+U, Ctrl+Shift+I, etc.)
-            document.addEventListener('keydown', function(e) {
-                // Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, F12
-                if (
-                    (e.ctrlKey && e.key === 'u') ||
-                    e.key === 'F12' ||
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))
-                ) {
-                    e.preventDefault();
-                    blockInspection();
-                    return false;
-                }
-            });
+    // Détection des outils de développement (pour les autres méthodes)
+    let devtoolsOpen = false;
+    const threshold = 160;
+    
+    setInterval(() => {
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
+        
+        if ((widthDiff > threshold || heightDiff > threshold) && !devtoolsOpen) {
+            devtoolsOpen = true;
+            redirectToBlank();
+        }
+    }, 500);
 
-            // Détection des outils de développement
-            const devtools = {
-                isOpen: false,
-                orientation: undefined
-            };
+    // Empêcher le clic droit
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
 
-            const threshold = 160;
-            const emitEvent = (isOpen, orientation) => {
-                if (isOpen) {
-                    blockInspection();
-                }
-            };
+})();
 
-            setInterval(() => {
-                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-                const orientation = widthThreshold ? 'vertical' : 'horizontal';
-
-                if (
-                    !devtools.isOpen &&
-                    (widthThreshold || heightThreshold)
-                ) {
-                    emitEvent(true, orientation);
-                }
-            }, 500);
 
             // Protection contre les iframes
             if (window.self !== window.top) {
