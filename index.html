@@ -51,19 +51,6 @@
             background-color: var(--bg-color);
             transition: background-color 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-        
-        /* Masquer le contenu si les outils de développement sont détectés */
-        html[devtools] body {
-            display: none !important;
-        }
-        
-        img {
-            pointer-events: none;
         }
         
         /* Header amélioré */
@@ -961,7 +948,7 @@
         </div>
         <div class="wave">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0 0,0,321.39,56.44Z" class="shape-fill"></path>
             </svg>
         </div>
     </header>
@@ -1172,43 +1159,83 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Message dissuasif dans la console
-        console.log('%c⚠️ Ce portfolio est protégé. Veuillez respecter mon travail et ne pas copier le code sans autorisation.', 'color: red; font-size: 16px; font-weight: bold;');
-
-        // Prevent right-click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Prevent common inspection shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-                (e.ctrlKey && e.key === 'U')
-            ) {
+        // Protection renforcée contre l'inspection
+        (function() {
+            // Empêcher le clic droit
+            document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
-            }
-        });
-
-        // Detect developer tools
-        function detectDevTools() {
-            const threshold = 150;
-            const widthDiff = window.outerWidth - window.innerWidth;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            if (widthDiff > threshold || heightDiff > threshold) {
-                document.documentElement.setAttribute('devtools', '');
-                document.body.innerHTML = '<h1>Accès non autorisé</h1>';
-                setTimeout(() => {
+                alert('Inspection non autorisée');
+                return false;
+            });
+            
+            // Empêcher les raccourcis clavier
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, F12
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                    (e.ctrlKey && e.key === 'U')
+                ) {
+                    e.preventDefault();
+                    alert('Inspection non autorisée');
                     window.location.href = 'about:blank';
-                }, 1000);
-            } else {
-                document.documentElement.removeAttribute('devtools');
+                    return false;
+                }
+            });
+            
+            // Détection des outils de développement
+            const devtools = /./;
+            devtools.toString = function() {
+                this.opened = true;
+                return '';
+            };
+            
+            setInterval(function() {
+                if (devtools.opened) {
+                    devtools.opened = false;
+                    window.location.href = 'about:blank';
+                }
+            }, 100);
+            
+            // Protection contre les iframes
+            if (window.self !== window.top) {
+                window.top.location = window.self.location;
             }
-        }
-        setInterval(detectDevTools, 500);
-        window.addEventListener('resize', detectDevTools);
-
+            
+            // Empêcher la copie
+            document.addEventListener('copy', function(e) {
+                e.preventDefault();
+                alert('Copie non autorisée');
+                return false;
+            });
+            
+            // Protection contre la navigation arrière
+            history.pushState(null, null, location.href);
+            window.onpopstate = function() {
+                history.go(1);
+            };
+            
+            // Détection du mode plein écran
+            document.addEventListener('fullscreenchange', function() {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            });
+            
+            // Détection de la taille de la fenêtre (outils de développement)
+            let lastWidth = window.innerWidth;
+            let lastHeight = window.innerHeight;
+            
+            setInterval(function() {
+                if (
+                    window.innerWidth !== lastWidth ||
+                    window.innerHeight !== lastHeight
+                ) {
+                    window.location.href = 'about:blank';
+                }
+            }, 500);
+        })();
+        
         // Initialisation AOS
         AOS.init({
             duration: 800,
@@ -1216,7 +1243,7 @@
             once: true,
             offset: 100
         });
-
+        
         // Gestion du thème sombre/clair
         const themeToggle = document.querySelector('.theme-toggle');
         const themeIcon = themeToggle.querySelector('i');
