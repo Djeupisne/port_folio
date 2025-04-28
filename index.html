@@ -1159,31 +1159,47 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Protection contre l'inspection
-        document.addEventListener('contextmenu', function(e) {
+        
+// Protection invisible contre l'inspection
+document.addEventListener('DOMContentLoaded', function() {
+    // Désactiver le menu contextuel
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
+
+    // Bloquer les raccourcis clavier
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, F12
+        if (e.ctrlKey && e.shiftKey && e.key === 'I' || 
+            e.ctrlKey && e.shiftKey && e.key === 'J' || 
+            e.ctrlKey && e.key === 'U' || 
+            e.key === 'F12') {
             e.preventDefault();
-            alert('Inspection désactivée');
-        });
+            e.stopPropagation();
+            return false;
+        }
+    }, false);
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey || e.shiftKey || e.key === 'I') || 
-                (e.ctrlKey || e.shiftKey || e.key === 'J') || 
-                (e.ctrlKey || e.key === 'U')) {
-                e.preventDefault();
-                alert('Inspection désactivée');
-            }
-        });
-
-        // Détection de l'ouverture des outils de développement
-        setInterval(function() {
-            if (window.outerWidth - window.innerWidth > 200 || 
-                window.outerHeight - window.innerHeight > 200) {
-                // Les outils de développement sont probablement ouverts
-                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">Inspection non autorisée</h1>';
+    // Détection discrète des outils de développement
+    let devtoolsOpen = false;
+    const threshold = 160; // Seuil de détection
+    
+    setInterval(function() {
+        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+        
+        if ((widthThreshold || heightThreshold) && !devtoolsOpen) {
+            devtoolsOpen = true;
+            document.body.style.display = 'none';
+            setTimeout(function() {
                 window.location.reload();
-            }
-        }, 1000);
+            }, 100);
+        } else if (!widthThreshold && !heightThreshold) {
+            devtoolsOpen = false;
+        }
+    }, 500);
+});
+
         // Initialisation AOS
         AOS.init({
             duration: 800,
