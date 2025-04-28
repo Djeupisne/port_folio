@@ -1160,30 +1160,48 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Protection contre l'inspection
-        document.addEventListener('contextmenu', function(e) {
+// Protection renforcée contre l'inspection
+document.addEventListener('DOMContentLoaded', function() {
+    // Empêcher l'accès au menu contextuel
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Empêcher les raccourcis clavier (F12, Ctrl+Shift+I, Ctrl+U, etc.)
+    document.addEventListener('keydown', function(e) {
+        // Liste des combinaisons de touches à bloquer
+        const forbiddenKeys = [
+            e.key === 'F12',
+            (e.ctrlKey && e.shiftKey && e.key === 'I'),
+            (e.ctrlKey && e.shiftKey && e.key === 'J'),
+            (e.ctrlKey && e.key === 'U'),
+            (e.ctrlKey && e.key === 'S'),
+            (e.ctrlKey && e.key === 'C')
+        ];
+
+        if (forbiddenKeys.some(condition => condition)) {
             e.preventDefault();
-            alert('Inspection désactivée');
-        });
+            e.stopPropagation();
+            return false;
+        }
+    });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey || e.shiftKey || e.key === 'I') || 
-                (e.ctrlKey || e.shiftKey || e.key === 'J') || 
-                (e.ctrlKey || e.key === 'U')) {
-                e.preventDefault();
-                alert('Inspection désactivée');
-            }
-        });
+    // Détection de l'ouverture des outils de développement
+    function detectDevTools() {
+        const devtools = /./;
+        devtools.toString = function() {
+            document.body.innerHTML = '<div style="padding:20px;text-align:center;font-family:Arial;"><h1>Accès non autorisé</h1><p>L\'inspection du code source est désactivée.</p></div>';
+            window.location.reload();
+            return '';
+        };
+        console.log('%c', devtools);
+    }
 
-        // Détection de l'ouverture des outils de développement
-        setInterval(function() {
-            if (window.outerWidth - window.innerWidth > 200 || 
-                window.outerHeight - window.innerHeight > 200) {
-                // Les outils de développement sont probablement ouverts
-                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">Inspection non autorisée</h1>';
-                window.location.reload();
-            }
-        }, 1000);
+    // Vérification périodique
+    setInterval(detectDevTools, 1000);
+    detectDevTools();
+});
+
         // Initialisation AOS
         AOS.init({
             duration: 800,
@@ -1302,48 +1320,6 @@
             });
         });
     </script>
-    <script>
-// Protection renforcée contre l'inspection
-document.addEventListener('DOMContentLoaded', function() {
-    // Empêcher l'accès au menu contextuel
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    // Empêcher les raccourcis clavier (F12, Ctrl+Shift+I, Ctrl+U, etc.)
-    document.addEventListener('keydown', function(e) {
-        // Liste des combinaisons de touches à bloquer
-        const forbiddenKeys = [
-            e.key === 'F12',
-            (e.ctrlKey && e.shiftKey && e.key === 'I'),
-            (e.ctrlKey && e.shiftKey && e.key === 'J'),
-            (e.ctrlKey && e.key === 'U'),
-            (e.ctrlKey && e.key === 'S'),
-            (e.ctrlKey && e.key === 'C')
-        ];
-
-        if (forbiddenKeys.some(condition => condition)) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-    });
-
-    // Détection de l'ouverture des outils de développement
-    function detectDevTools() {
-        const devtools = /./;
-        devtools.toString = function() {
-            document.body.innerHTML = '<div style="padding:20px;text-align:center;font-family:Arial;"><h1>Accès non autorisé</h1><p>L\'inspection du code source est désactivée.</p></div>';
-            window.location.reload();
-            return '';
-        };
-        console.log('%c', devtools);
-    }
-
-    // Vérification périodique
-    setInterval(detectDevTools, 1000);
-    detectDevTools();
-});
-</script>
+      
 </body>
 </html>
