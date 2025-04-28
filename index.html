@@ -51,6 +51,19 @@
             background-color: var(--bg-color);
             transition: background-color 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        /* Masquer le contenu si les outils de développement sont détectés */
+        html[devtools] body {
+            display: none !important;
+        }
+        
+        img {
+            pointer-events: none;
         }
         
         /* Header amélioré */
@@ -1159,6 +1172,9 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Message dissuasif dans la console
+        console.log('%c⚠️ Ce portfolio est protégé. Veuillez respecter mon travail et ne pas copier le code sans autorisation.', 'color: red; font-size: 16px; font-weight: bold;');
+
         // Prevent right-click
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
@@ -1175,39 +1191,23 @@
             }
         });
 
-        // Detect developer tools and close the window
-        (function() {
-            const threshold = 160;
-            let lastCheck = Date.now();
-            let checkCount = 0;
-            const maxChecks = 10; // Limit checks to prevent performance issues
-            const checkInterval = setInterval(function() {
-                if (checkCount >= maxChecks) {
-                    clearInterval(checkInterval);
-                    return;
-                }
-                const now = Date.now();
-                if (now - lastCheck < 100) return; // Throttle checks
-                lastCheck = now;
-                checkCount++;
-                const widthDiff = window.outerWidth - window.innerWidth;
-                const heightDiff = window.outerHeight - window.innerHeight;
-                if (widthDiff > threshold || heightDiff > threshold) {
-                    clearInterval(checkInterval);
-                    window.location.href = 'about:blank'; // Silently redirect to blank page
-                }
-            }, 500);
-
-            // Additional protection using debugger loop
-            let debugCheck = true;
-            setInterval(() => {
-                if (debugCheck) {
-                    (function() {}).constructor('debugger')();
-                }
-                debugCheck = false;
-                setTimeout(() => { debugCheck = true; }, 100);
-            }, 500);
-        })();
+        // Detect developer tools
+        function detectDevTools() {
+            const threshold = 150;
+            const widthDiff = window.outerWidth - window.innerWidth;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            if (widthDiff > threshold || heightDiff > threshold) {
+                document.documentElement.setAttribute('devtools', '');
+                document.body.innerHTML = '<h1>Accès non autorisé</h1>';
+                setTimeout(() => {
+                    window.location.href = 'about:blank';
+                }, 1000);
+            } else {
+                document.documentElement.removeAttribute('devtools');
+            }
+        }
+        setInterval(detectDevTools, 500);
+        window.addEventListener('resize', detectDevTools);
 
         // Initialisation AOS
         AOS.init({
@@ -1286,7 +1286,7 @@
                 if (response.ok) {
                     statusElement.innerHTML = `
                         <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais .
+                            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
                         </div>
                     `;
                     form.reset();
@@ -1296,7 +1296,7 @@
             } catch (error) {
                 console.error('Erreur:', error);
                 statusElement.innerHTML = `
-                    <div class手の alert alert-error">
+                    <div class="alert alert-error">
                         <i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Essayez de m'envoyer un email directement à <a href="mailto:oualoumidjeupisne@gmail.com">oualoumidjeupisne@gmail.com</a>
                     </div>
                 `;
