@@ -1302,5 +1302,48 @@
             });
         });
     </script>
+    <script>
+// Protection renforcée contre l'inspection
+document.addEventListener('DOMContentLoaded', function() {
+    // Empêcher l'accès au menu contextuel
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Empêcher les raccourcis clavier (F12, Ctrl+Shift+I, Ctrl+U, etc.)
+    document.addEventListener('keydown', function(e) {
+        // Liste des combinaisons de touches à bloquer
+        const forbiddenKeys = [
+            e.key === 'F12',
+            (e.ctrlKey && e.shiftKey && e.key === 'I'),
+            (e.ctrlKey && e.shiftKey && e.key === 'J'),
+            (e.ctrlKey && e.key === 'U'),
+            (e.ctrlKey && e.key === 'S'),
+            (e.ctrlKey && e.key === 'C')
+        ];
+
+        if (forbiddenKeys.some(condition => condition)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+
+    // Détection de l'ouverture des outils de développement
+    function detectDevTools() {
+        const devtools = /./;
+        devtools.toString = function() {
+            document.body.innerHTML = '<div style="padding:20px;text-align:center;font-family:Arial;"><h1>Accès non autorisé</h1><p>L\'inspection du code source est désactivée.</p></div>';
+            window.location.reload();
+            return '';
+        };
+        console.log('%c', devtools);
+    }
+
+    // Vérification périodique
+    setInterval(detectDevTools, 1000);
+    detectDevTools();
+});
+</script>
 </body>
 </html>
