@@ -824,6 +824,8 @@ footer::before {
     border-radius: var(--border-radius);
     max-width: 500px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: slideDown 0.3s ease;
     position: relative;
@@ -874,13 +876,30 @@ footer::before {
     padding: 1.5rem;
     background: var(--light);
     border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
+    margin: 1.5rem 0;
     font-size: 1.2rem;
 }
 
-.payment-total strong {
-    color: var(--primary);
-    font-size: 1.5rem;
+/* Modal Form Groups */
+.modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal .submit-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#authStatus,
+#paymentStatus {
+    margin-top: 1rem;
+    display: block;
+}
+
+#formStatus {
+    margin-top: 1rem;
+    display: block;
 }
 
 /* Animations */
