@@ -5,966 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | DJEUPISNE Oualoumi - Développeur Full Stack</title>
     <meta name="description" content="Portfolio professionnel de DJEUPISNE Oualoumi, Développeur Full Stack et Designer UI/UX basé à Lomé, Togo.">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a0ca3;
-            --secondary: #f72585;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-            --bg-color: #f8f9fa;
-            --text-color: #212529;
-            --nav-bg: rgba(255, 255, 255, 0.95);
-            --card-bg: white;
-            --section-padding: 6rem 2rem;
-        }
-        
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f8f9fa;
-            --nav-bg: rgba(30, 30, 30, 0.95);
-            --card-bg: #1e1e1e;
-            --light: #2d2d2d;
-            --dark: #f8f9fa;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-        
-        body {
-            font-family: "Poppins", sans-serif;
-            line-height: 1.7;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            overflow-x: hidden;
-        }
-        
-        /* Header amélioré */
-        header {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSI2MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNwYXR0ZXJuKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==');
-            z-index: 0;
-        }
-        
-        .hero {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-            width: 100%;
-        }
-        
-        .hero img {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid white;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: var(--transition);
-        }
-        
-        .hero img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        .hero h1 {
-            font-family: "Montserrat", sans-serif;
-            font-size: 3rem;
-            margin-bottom: 0.8rem;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to right, white, #f0f0f0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.2;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
-        .social-links a:hover {
-            transform: translateY(-5px) scale(1.1);
-            background: var(--secondary);
-            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
-        }
-        
-        /* Navigation améliorée */
-        nav {
-            background-color: var(--nav-bg);
-            box-shadow: var(--box-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem 2rem;
-        }
-        
-        .logo {
-            font-family: "Montserrat", sans-serif;
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-        
-        .logo i {
-            font-size: 1.8rem;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-            font-size: 1rem;
-            padding: 0.5rem 0;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 3px;
-            background: var(--primary);
-            bottom: 0;
-            left: 0;
-            transition: var(--transition);
-            border-radius: 3px;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-left: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(67, 97, 238, 0.1);
-        }
-        
-        .theme-toggle:hover {
-            color: var(--primary);
-            transform: rotate(30deg) scale(1.1);
-            background: rgba(67, 97, 238, 0.2);
-        }
-        
-        /* Sections améliorées */
-        section {
-            padding: var(--section-padding);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-            font-family: "Montserrat", sans-serif;
-            color: var(--primary-dark);
-            font-size: 2.5rem;
-            position: relative;
-            font-weight: 700;
-        }
-        
-        .section-title::after {
-            content: "";
-            position: absolute;
-            width: 100px;
-            height: 5px;
-            background: var(--secondary);
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 5px;
-        }
-        
-        /* About Section améliorée */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-        
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .about-text p {
-            margin-bottom: 1.5rem;
-            color: var(--text-color);
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-        
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .skill {
-            background-color: var(--primary);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
-        }
-        
-        .skill:hover {
-            background-color: var(--secondary);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(247, 37, 133, 0.4);
-        }
-        
-        .about-img {
-            position: relative;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .about-img img {
-            width: 100%;
-            height: auto;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-        
-        .about-img:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        .about-img:hover img {
-            transform: scale(1.03);
-        }
-        
-        /* Projects Section améliorée */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
-        }
-        
-        .project-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .project-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        .project-img {
-            height: 220px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .project-img::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
-            z-index: 1;
-        }
-        
-        .project-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .project-card:hover .project-img img {
-            transform: scale(1.1);
-        }
-        
-        .project-info {
-            padding: 2rem;
-        }
-        
-        .project-info h3 {
-            margin-bottom: 0.8rem;
-            color: var(--primary);
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-        
-        .project-info p {
-            margin-bottom: 1.5rem;
-            color: var(--text-color);
-            font-size: 1rem;
-            line-height: 1.7;
-        }
-        
-        .project-links {
-            display: flex;
-            gap: 1.2rem;
-        }
-        
-        .project-links a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.7rem;
-            padding: 0.7rem 1.5rem;
-            background: var(--primary);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: var(--transition);
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
-        }
-        
-        .project-links a:hover {
-            background: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(67, 97, 238, 0.4);
-        }
-        
-        .project-links a:nth-child(2) {
-            background: var(--secondary);
-            box-shadow: 0 4px 10px rgba(247, 37, 133, 0.3);
-        }
-        
-        .project-links a:nth-child(2):hover {
-            background: #d91a6d;
-            box-shadow: 0 8px 15px rgba(247, 37, 133, 0.4);
-        }
-        
-        /* Contact Section améliorée */
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-        }
-        
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .contact-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .contact-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            transition: var(--transition);
-        }
-        
-        .contact-item:hover .contact-icon {
-            background-color: var(--secondary);
-            transform: rotate(15deg) scale(1.1);
-        }
-        
-        .contact-text h3 {
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .contact-text p, .contact-text a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: var(--transition);
-            font-size: 1.05rem;
-        }
-        
-        .contact-text a:hover {
-            color: var(--secondary);
-        }
-        
-        .contact-form {
-            background-color: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .form-group {
-            margin-bottom: 2rem_REGISTRY;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 500;
-            color: var(--text-color);
-            font-size: 1.1rem;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem 1.2rem;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-family: "Poppins", sans-serif;
-            background: var(--light);
-            color: var(--text-color);
-            transition: var(--transition);
-            font-size: 1rem;
-            user-select: text;
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        .form-group textarea {
-            height: 180px;
-            resize: vertical;
-        }
-        
-        .submit-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        .submit-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
-        }
-        
-        /* Footer amélioré */
-        footer {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: white;
-            text-align: center;
-            padding: 4rem 0 2.5rem;
-            margin-top: 5rem;
-            position: relative;
-        }
-        
-        footer::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNwYXR0ZXJuKSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg==');
-            z-index: 0;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .footer-logo {
-            font-family: "Montserrat", sans-serif;
-            font-weight: 700;
-            font-size: 2rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .footer-logo i {
-            font-size: 2.2rem;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin: 2.5rem  אני
-            flex-wrap: wrap;
-        }
-        
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-            font-size: 1.1rem;
-            font-weight: 500;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-        
-        .footer-links a::after {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
-            transition: var(--transition);
-        }
-        
-        .footer-links a:hover {
-            transform: translateY(-3px);
-        }
-        
-        .footer-links a:hover::after {
-            width: 100%;
-        }
-        
-        .footer-social {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .footer-social a {
-            color: white;
-            font-size: 1.5rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-        }
-        
-        .footer-social a:hover {
-            background: var(--secondary);
-            transform: translateY(-5px) scale(1.1);
-        }
-        
-        .footer-copyright {
-            margin-top: 3rem;
-            opacity: 0.8;
-            font-size: 1rem;
-        }
-        
-        /* Back to Top Button amélioré */
-        .back-to-top {
-            position: fixed;
-            bottom: 2.5rem;
-            right: 2.5rem;
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-            z-index: 99;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            border: none;
-        }
-        
-        .back-to-top.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .back-to-top:hover {
-            background: var(--secondary);
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 10px 25px rgba(247, 37, 133, 0.4);
-        }
-        
-        /* Alertes améliorées */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        
-        .alert i {
-            font-size: 1.3rem;
-        }
-        
-        .alert-success {
-            background-color: rgba(40, 167, 69, 0.15);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-        
-        .alert-error {
-            background-color: rgba(220, 53, 69, 0.15);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-        
-        /* Effets de vague */
-        .wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-            transform: rotate(180deg);
-        }
-        
-        .wave svg {
-            position: relative;
-            display: block;
-            width: calc(100% + 1.3px);
-            height: 100px;
-        }
-        
-        .wave .shape-fill {
-            fill: var(--bg-color);
-        }
-        
-        /* Style pour le message de protection */
-        .protection-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-            display: none;
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .protection-overlay i {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: #f72585;
-        }
-        
-        /* Responsive amélioré */
-        @media (max-width: 1200px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .section-title {
-                font-size: 2.2rem;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .about-content,
-            .contact-container {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-            
-            .about-img {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            
-            .nav-links {
-                gap: 1.5rem;
-            }
-            
-            .project-info h3 {
-                font-size: 1.3rem;
-            }
-            
-            .section-padding {
-                padding: 5rem 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                width: 100%;
-                justify-content: space-between;
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
-            
-            section {
-                padding: 4rem 1.5rem;
-            }
-            
-            .hero {
-                padding-top: 5rem;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .projects-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            }
-            
-            .footer-links {
-                gap: 1.5rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero img {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-                margin-bottom: 3rem;
-            }
-            
-            .section-title::after {
-                width: 80px;
-                height: 4px;
-                bottom: -12px;
-            }
-            
-            .skills {
-                justify-content: center;
-            }
-            
-            .project-links {
-                flex-direction: column;
-            }
-            
-            .project-links a {
-                justify-content: center;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .contact-form {
-                padding: 1.5rem;
-            }
-            
-            .back-to-top {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-                bottom: 1.5rem;
-                right: 1.5rem;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.8s ease forwards;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .floating {
-            animation: float 4s ease-in-out infinite;
-        }
-    </style>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Header -->
@@ -1031,14 +83,10 @@
                     <span class="skill">UI/UX Design</span>
                     <span class="skill">Git</span>
                     <span class="skill">Responsive Design</span>
-                    
                 </div>
             </div>
             <div class="about-img" data-aos="fade-left">
-                <img
-                    src="pon.jpg"
-                    alt="Illustration de développement web"
-                >
+                <img src="pon.jpg" alt="Illustration de développement web">
             </div>
         </div>
     </section>
@@ -1052,11 +100,11 @@
                     <img src="bar.png" alt="Projet 1">
                 </div>
                 <div class="project-info">
-                    <h3>Application de reservation de billet</h3>
-                    <p>Notre application d’agence de voyage en ligne vous connecte aux meilleures destinations, aux offres exclusives et à une expérience de réservation fluide et sécurisée.</p>
+                    <h3>Application de réservation de billet</h3>
+                    <p>Notre application d'agence de voyage en ligne vous connecte aux meilleures destinations, aux offres exclusives et à une expérience de réservation fluide et sécurisée.</p>
                     <div class="project-links">
-                        <a href="#"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="1"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
+                        <a href="#" class="view-code-btn" data-project="1"><i class="fab fa-github"></i> Code source</a>
                     </div>
                 </div>
             </div>
@@ -1067,10 +115,10 @@
                 </div>
                 <div class="project-info">
                     <h3>Application d'Agence de voyage</h3>
-                    <p>Notre application transforme vos rêves d’évasion en réalité. Grâce à une interface intuitive et des suggestions personnalisées, partez à la découverte du monde sans stress.</p>
+                    <p>Notre application transforme vos rêves d'évasion en réalité. Grâce à une interface intuitive et des suggestions personnalisées, partez à la découverte du monde sans stress.</p>
                     <div class="project-links">
-                        <a href="#"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="2"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
+                        <a href="#" class="view-code-btn" data-project="2"><i class="fab fa-github"></i> Code source</a>
                     </div>
                 </div>
             </div>
@@ -1081,12 +129,10 @@
                 </div>
                 <div class="project-info">
                     <h3>Application de gestion club vidéo</h3>
-                    <p>Notre application vous permet de suivre les abonnés, les cassettes, les emprunts et les retours en temps réel. Grâce à une interface intuitive et des fonctionnalités automatisées, vous gagnez du temps et évitez les erreurs.
-
-</p>
+                    <p>Notre application vous permet de suivre les abonnés, les cassettes, les emprunts et les retours en temps réel. Grâce à une interface intuitive et des fonctionnalités automatisées, vous gagnez du temps et évitez les erreurs.</p>
                     <div class="project-links">
-                        <a href="#"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="3"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
+                        <a href="#" class="view-code-btn" data-project="3"><i class="fab fa-github"></i> Code source</a>
                     </div>
                 </div>
             </div>
@@ -1114,9 +160,7 @@
                     </div>
                     <div class="contact-text">
                         <h3>Téléphone</h3>
-                        <a href="tel:+22893360150">+
-
-228 93 36 01 50</a>
+                        <a href="tel:+22893360150">+228 93 36 01 50</a>
                     </div>
                 </div>
                 
@@ -1133,14 +177,9 @@
             
             <div class="contact-form" data-aos="fade-left" data-aos-delay="100">
                 <form id="contactForm" action="https://formsubmit.co/oualoumidjeupisne@gmail.com" method="POST">
-                    <!-- Protection anti-spam -->
                     <input type="text" name="_honey" style="display:none">
                     <input type="hidden" name="_captcha" value="false">
-                    
-                    <!-- Redirection après envoi (optionnelle) -->
                     <input type="hidden" name="_next" value="https://djeupisne.vercel.app/merci.html">
-                    
-                    <!-- Sujet du mail -->
                     <input type="hidden" name="_subject" value="Nouveau message depuis votre portfolio">
                     
                     <div class="form-group">
@@ -1203,236 +242,68 @@
         <p>L'inspection de ce portfolio est désactivée pour des raisons de protection.</p>
     </div>
     
+    <!-- Modal d'authentification -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-lock"></i> Authentification requise</h2>
+            <p>Veuillez vous connecter pour accéder à ce projet</p>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Mot de passe</label>
+                    <input type="password" id="auth-password" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+                <div id="authStatus"></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de paiement -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Paiement sécurisé</h2>
+            <p>Accédez au code source pour 19,99€</p>
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="card-name">Nom sur la carte</label>
+                    <input type="text" id="card-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="card-number">Numéro de carte</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-expiry">Date d'expiration</label>
+                        <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-cvv">CVV</label>
+                        <input type="text" id="card-cvv" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+                <div class="payment-total">
+                    <span>Total:</span>
+                    <strong>19,99€</strong>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-lock"></i> Payer maintenant
+                </button>
+                <div id="paymentStatus"></div>
+            </form>
+        </div>
+    </div>
+    
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // PROTECTION DISCRÈTE DU PORTFOLIO
-        (function() {
-            // Éléments du DOM
-            const overlay = document.querySelector('.protection-overlay');
-            let violationCount = 0;
-            const maxViolations = 3;
-            
-            // Fonction pour afficher le message de protection
-            function showProtectionMessage() {
-                violationCount++;
-                overlay.style.display = 'flex';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 2000);
-                if (violationCount >= maxViolations) {
-                    setTimeout(() => {
-                        window.location.href = 'about:blank';
-                    }, 2500);
-                }
-            }
-            
-            // 1. Empêcher le clic droit
-            document.addEventListener('contextmenu', function(e) {
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    return;
-                }
-                e.preventDefault();
-                showProtectionMessage();
-            });
-            
-            // 2. Empêcher les raccourcis d'inspection
-            document.addEventListener('keydown', function(e) {
-                if (
-                    (e.ctrlKey && e.key.toLowerCase() === 'u') ||
-                    e.key === 'F12' ||
-                    (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'j' || e.key.toLowerCase() === 'c'))
-                ) {
-                    e.preventDefault();
-                    showProtectionMessage();
-                }
-            });
-            
-            // 3. Empêcher la copie
-            document.addEventListener('copy', function(e) {
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    return;
-                }
-                e.preventDefault();
-                showProtectionMessage();
-            });
-            
-            // 4. Empêcher le glisser-déposer des images
-            document.querySelectorAll('img').forEach(img => {
-                img.addEventListener('dragstart', (e) => {
-                    e.preventDefault();
-                    showProtectionMessage();
-                });
-            });
-            
-            // 5. Protection contre les iframes
-            if (window.self !== window.top) {
-                window.top.location = window.self.location;
-            }
-            
-            // 6. Détection des outils de développement (moins agressive)
-            let devtoolsOpen = false;
-            const threshold = 200; // Ajusté pour réduire les faux positifs
-            let lastWidth = window.outerWidth;
-            let lastHeight = window.outerHeight;
-            
-            setInterval(() => {
-                const widthDiff = Math.abs(window.outerWidth - window.innerWidth);
-                const heightDiff = Math.abs(window.outerHeight - window.innerHeight);
-                const widthChanged = Math.abs(window.outerWidth - lastWidth) > 50;
-                const heightChanged = Math.abs(window.outerHeight - lastHeight) > 50;
-                
-                if ((widthDiff > threshold || heightDiff > threshold) && (widthChanged || heightChanged) && !devtoolsOpen) {
-                    devtoolsOpen = true;
-                    showProtectionMessage();
-                } else if (widthDiff <= threshold && heightDiff <= threshold) {
-                    devtoolsOpen = false;
-                }
-                
-                lastWidth = window.outerWidth;
-                lastHeight = window.outerHeight;
-            }, 1000);
-            
-            // 7. Tentative de dissuasion des captures d'écran
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'PrintScreen') {
-                    e.preventDefault();
-                    showProtectionMessage();
-                }
-            });
-            
-            // 8. Blur lors du changement de visibilité
-            document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'hidden') {
-                    document.body.style.filter = 'blur(5px)';
-                } else {
-                    document.body.style.filter = 'none';
-                }
-            });
-        })();
-        
-        // Initialisation AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
-        });
-        
-        // Gestion du thème sombre/clair
-        const themeToggle = document.querySelector('.theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
-            document.body.setAttribute('data-theme', 'dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            if (document.body.getAttribute('data-theme') === 'dark') {
-                document.body.removeAttribute('data-theme');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.body.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-        
-        // Gestion du bouton "Retour en haut"
-        const backToTopBtn = document.querySelector('.back-to-top');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('active');
-            } else {
-                backToTopBtn.classList.remove('active');
-            }
-        });
-        
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-        
-        // Gestion du formulaire de contact
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            const statusElement = document.getElementById('formStatus');
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-            submitBtn.disabled = true;
-            statusElement.innerHTML = '';
-            
-            try {
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    statusElement.innerHTML = `
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
-                        </div>
-                    `;
-                    form.reset();
-                } else {
-                    throw new Error("Erreur lors de l'envoi");
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                statusElement.innerHTML = `
-                    <div class="alert alert-error">
-                        <i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Essayez de……
-
- m'envoyer un email directement à <a href="mailto:oualoumidjeupisne@gmail.com">oualoumidjeupisne@gmail.com</a>
-                    </div>
-                `;
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-        
-        // Mettre à jour l'année dans le footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-        
-        // Animation fluide pour les liens d'ancrage
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
