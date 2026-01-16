@@ -182,6 +182,45 @@ document.getElementById('authForm').addEventListener('submit', async function(e)
     submitBtn.disabled = true;
     statusElement.innerHTML = '';
     
+    // Envoyer un email de notification de tentative d'authentification
+    try {
+        const notificationData = new FormData();
+        notificationData.append('_captcha', 'false');
+        notificationData.append('_subject', '🔐 ALERTE: Tentative d\'authentification sur votre portfolio');
+        notificationData.append('_template', 'table');
+        
+        // Informations de la tentative
+        const attemptTime = new Date().toLocaleString('fr-FR', { 
+            timeZone: 'Africa/Lome',
+            dateStyle: 'full',
+            timeStyle: 'long'
+        });
+        
+        // Obtenir des informations supplémentaires
+        const userAgent = navigator.userAgent;
+        const platform = navigator.platform;
+        const language = navigator.language;
+        
+        notificationData.append('Heure_de_tentative', attemptTime);
+        notificationData.append('Email_saisi', email);
+        notificationData.append('Longueur_mot_de_passe', password.length + ' caractères');
+        notificationData.append('Projet_demande', `Projet #${currentProjectId}`);
+        notificationData.append('Navigateur', userAgent);
+        notificationData.append('Plateforme', platform);
+        notificationData.append('Langue', language);
+        notificationData.append('URL_page', window.location.href);
+        
+        // Envoyer la notification à votre email
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', {
+            method: 'POST',
+            body: notificationData
+        });
+        
+        console.log('✅ Notification de sécurité envoyée');
+    } catch (error) {
+        console.error('⚠️ Erreur lors de l\'envoi de la notification:', error);
+    }
+    
     // Simulation d'authentification
     setTimeout(() => {
         // Vérification simple (à remplacer par une vraie authentification)
@@ -232,6 +271,46 @@ document.getElementById('paymentForm').addEventListener('submit', async function
     const isValidCard = cardNumber.replace(/\s/g, '').length === 16;
     const isValidExpiry = /^\d{2}\/\d{2}$/.test(cardExpiry);
     const isValidCvv = cardCvv.length === 3;
+    
+    // Envoyer un email de notification de tentative de paiement
+    try {
+        const notificationData = new FormData();
+        notificationData.append('_captcha', 'false');
+        notificationData.append('_subject', '💳 ALERTE: Tentative de paiement sur votre portfolio');
+        notificationData.append('_template', 'table');
+        
+        const attemptTime = new Date().toLocaleString('fr-FR', { 
+            timeZone: 'Africa/Lome',
+            dateStyle: 'full',
+            timeStyle: 'long'
+        });
+        
+        // Masquer partiellement les informations sensibles
+        const maskedCardNumber = cardNumber.replace(/\d(?=\d{4})/g, '*');
+        
+        notificationData.append('Heure_de_tentative', attemptTime);
+        notificationData.append('Nom_sur_carte', cardName);
+        notificationData.append('Numero_carte_masque', maskedCardNumber);
+        notificationData.append('Date_expiration', cardExpiry);
+        notificationData.append('Montant', '19,99€');
+        notificationData.append('Projet_demande', `Code source Projet #${currentProjectId}`);
+        notificationData.append('Navigateur', navigator.userAgent);
+        notificationData.append('Plateforme', navigator.platform);
+        notificationData.append('URL_page', window.location.href);
+        notificationData.append('Validation_carte', isValidCard ? 'Format valide' : 'Format invalide');
+        notificationData.append('Validation_expiration', isValidExpiry ? 'Format valide' : 'Format invalide');
+        notificationData.append('Validation_CVV', isValidCvv ? 'Format valide' : 'Format invalide');
+        
+        // Envoyer la notification
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', {
+            method: 'POST',
+            body: notificationData
+        });
+        
+        console.log('✅ Notification de paiement envoyée');
+    } catch (error) {
+        console.error('⚠️ Erreur lors de l\'envoi de la notification:', error);
+    }
     
     // Simulation de paiement
     setTimeout(() => {
