@@ -1,392 +1,572 @@
-// ============================================================
-//  PROTECTION DU PORTFOLIO
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   PROTECTION DU PORTFOLIO
+═══════════════════════════════════════════════════════════ */
 (function () {
-    const overlay = document.querySelector('.protection-overlay');
+    const overlay = document.getElementById('protectionOverlay');
     let violationCount = 0;
-    const maxViolations = 3;
 
-    function showProtectionMessage() {
+    function showProtection() {
         violationCount++;
-        overlay.style.display = 'flex';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 2000);
-        if (violationCount >= maxViolations) {
-            setTimeout(() => {
-                window.location.href = 'about:blank';
-            }, 2500);
+        overlay.classList.add('show');
+        setTimeout(() => overlay.classList.remove('show'), 2200);
+        if (violationCount >= 3) {
+            setTimeout(() => { window.location.href = 'about:blank'; }, 2700);
         }
     }
 
-    // Empêcher le clic droit (sauf dans les champs de formulaire)
-    document.addEventListener('contextmenu', function (e) {
+    // Clic droit
+    document.addEventListener('contextmenu', e => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        e.preventDefault();
-        showProtectionMessage();
+        e.preventDefault(); showProtection();
     });
 
-    // Empêcher les raccourcis d'inspection
-    document.addEventListener('keydown', function (e) {
-        if (
+    // Raccourcis d'inspection
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12' ||
             (e.ctrlKey && e.key.toLowerCase() === 'u') ||
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey &&
-                (e.key.toLowerCase() === 'i' ||
-                    e.key.toLowerCase() === 'j' ||
-                    e.key.toLowerCase() === 'c'))
-        ) {
-            e.preventDefault();
-            showProtectionMessage();
+            (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase()))) {
+            e.preventDefault(); showProtection();
         }
     });
 
-    // Empêcher la copie (sauf dans les champs de formulaire)
-    document.addEventListener('copy', function (e) {
+    // Copie (sauf inputs)
+    document.addEventListener('copy', e => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        e.preventDefault();
-        showProtectionMessage();
+        e.preventDefault(); showProtection();
     });
 
-    // Empêcher le glisser-déposer des images
+    // Drag d'images
     document.querySelectorAll('img').forEach(img => {
-        img.addEventListener('dragstart', (e) => {
-            e.preventDefault();
-            showProtectionMessage();
-        });
+        img.addEventListener('dragstart', e => { e.preventDefault(); showProtection(); });
     });
 
-    // Protection contre les iframes
-    if (window.self !== window.top) {
-        window.top.location = window.self.location;
-    }
+    // Anti-iframe
+    if (window.self !== window.top) window.top.location = window.self.location;
 })();
 
 
-// ============================================================
-//  INITIALISATION AOS
-// ============================================================
-AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
-    once: true,
-    offset: 100
-});
+/* ═══════════════════════════════════════════════════════════
+   AOS
+═══════════════════════════════════════════════════════════ */
+AOS.init({ duration: 750, easing: 'ease-out-cubic', once: true, offset: 80 });
 
 
-// ============================================================
-//  THÈME SOMBRE / CLAIR
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   CANVAS PARTICLES
+═══════════════════════════════════════════════════════════ */
+(function () {
+    const canvas = document.getElementById('particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+
+    function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); init(); });
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = rand(0, W);
+            this.y = rand(0, H);
+            this.r = rand(0.5, 2.2);
+            this.dx = rand(-0.3, 0.3);
+            this.dy = rand(-0.5, -0.1);
+            this.alpha = rand(0.2, 0.8);
+            this.color = Math.random() > .5
+                ? `rgba(123,151,255,${this.alpha})`
+                : `rgba(76,201,240,${this.alpha})`;
+        }
+        update() {
+            this.x += this.dx;
+            this.y += this.dy;
+            if (this.y < -4 || this.x < -4 || this.x > W + 4) this.reset();
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        particles = [];
+        const count = Math.floor((W * H) / 8000);
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => { p.update(); p.draw(); });
+
+        // Connect nearby particles
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(123,151,255,${0.08 * (1 - dist / 100)})`;
+                    ctx.lineWidth = .5;
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    init();
+    animate();
+})();
+
+
+/* ═══════════════════════════════════════════════════════════
+   TYPEWRITER
+═══════════════════════════════════════════════════════════ */
+(function () {
+    const el = document.getElementById('typewriter');
+    if (!el) return;
+    const texts = [
+        'Développeur Full Stack',
+        'Designer UI/UX',
+        'Passionné de Code',
+        'Créateur de Solutions Web',
+    ];
+    let textIndex = 0, charIndex = 0, deleting = false;
+
+    function type() {
+        const current = texts[textIndex];
+        if (!deleting) {
+            el.textContent = current.substring(0, ++charIndex);
+            if (charIndex === current.length) {
+                deleting = true;
+                return setTimeout(type, 1800);
+            }
+        } else {
+            el.textContent = current.substring(0, --charIndex);
+            if (charIndex === 0) {
+                deleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+            }
+        }
+        setTimeout(type, deleting ? 60 : 90);
+    }
+    setTimeout(type, 500);
+})();
+
+
+/* ═══════════════════════════════════════════════════════════
+   COUNTERS
+═══════════════════════════════════════════════════════════ */
+(function () {
+    const counters = document.querySelectorAll('.counter');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = +el.getAttribute('data-target');
+            const suffix = el.getAttribute('data-suffix') || '';
+            let count = 0;
+            const step = Math.ceil(target / 50);
+            const interval = setInterval(() => {
+                count = Math.min(count + step, target);
+                el.textContent = count + suffix;
+                if (count >= target) clearInterval(interval);
+            }, 30);
+            observer.unobserve(el);
+        });
+    }, { threshold: .5 });
+    counters.forEach(c => observer.observe(c));
+})();
+
+
+/* ═══════════════════════════════════════════════════════════
+   THÈME
+═══════════════════════════════════════════════════════════ */
 const themeToggle = document.querySelector('.theme-toggle');
-const themeIcon = themeToggle.querySelector('i');
-const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
 
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
     document.body.setAttribute('data-theme', 'dark');
-    themeIcon.classList.replace('fa-moon', 'fa-sun');
+    if (themeIcon) themeIcon.className = 'fas fa-sun';
 }
 
-themeToggle.addEventListener('click', () => {
-    if (document.body.getAttribute('data-theme') === 'dark') {
-        document.body.removeAttribute('data-theme');
-        themeIcon.classList.replace('fa-sun', 'fa-moon');
-        localStorage.setItem('theme', 'light');
-    } else {
-        document.body.setAttribute('data-theme', 'dark');
-        themeIcon.classList.replace('fa-moon', 'fa-sun');
-        localStorage.setItem('theme', 'dark');
-    }
-});
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        if (themeIcon) themeIcon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        if (isDark) document.body.removeAttribute('data-theme');
+    });
+}
 
 
-// ============================================================
-//  BOUTON RETOUR EN HAUT
-// ============================================================
-const backToTopBtn = document.querySelector('.back-to-top');
+/* ═══════════════════════════════════════════════════════════
+   BURGER MENU
+═══════════════════════════════════════════════════════════ */
+const burger = document.querySelector('.burger');
+const mobileMenu = document.getElementById('mobileMenu');
+if (burger && mobileMenu) {
+    burger.addEventListener('click', () => {
+        burger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', () => {
+            burger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+        });
+    });
+}
 
+
+/* ═══════════════════════════════════════════════════════════
+   NAV SCROLL STYLE
+═══════════════════════════════════════════════════════════ */
+const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('active');
-    } else {
-        backToTopBtn.classList.remove('active');
-    }
-});
-
-backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (navbar) navbar.style.boxShadow = window.scrollY > 50
+        ? '0 4px 30px rgba(0,0,0,.12)' : '';
 });
 
 
-// ============================================================
-//  DÉFILEMENT FLUIDE POUR LES ANCRES
-// ============================================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
+/* ═══════════════════════════════════════════════════════════
+   BACK TO TOP
+═══════════════════════════════════════════════════════════ */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+    if (!backTop) return;
+    backTop.classList.toggle('active', window.scrollY > 400);
+});
+if (backTop) backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+
+/* ═══════════════════════════════════════════════════════════
+   SMOOTH ANCHORS
+═══════════════════════════════════════════════════════════ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        if (id === '#') return;
+        const target = document.querySelector(id);
+        if (target) {
             e.preventDefault();
-            window.scrollTo({
-                top: targetElement.offsetTop - 100,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
         }
     });
 });
 
 
-// ============================================================
-//  ANNÉE DANS LE FOOTER
-// ============================================================
-document.getElementById('year').textContent = new Date().getFullYear();
+/* ═══════════════════════════════════════════════════════════
+   FOOTER YEAR
+═══════════════════════════════════════════════════════════ */
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 
-// ============================================================
-//  GESTION DES MODALS
-// ============================================================
-const authModal = document.getElementById('authModal');
-const codeAccessModal = document.getElementById('codeAccessModal');
+/* ═══════════════════════════════════════════════════════════
+   MODALS HELPER
+═══════════════════════════════════════════════════════════ */
 let currentProjectId = null;
 let currentProjectName = '';
 
-// Fermer les modals via le bouton ×
-document.querySelectorAll('.close-modal').forEach(closeBtn => {
-    closeBtn.addEventListener('click', function () {
-        this.closest('.modal').style.display = 'none';
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Fermeture via boutons ×
+document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.getAttribute('data-modal')));
+});
+
+// Fermeture en cliquant hors du modal-box
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', e => {
+        if (e.target === modal) closeModal(modal.id);
     });
 });
 
-// Fermer les modals en cliquant à l'extérieur
-window.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
+// Fermeture avec Échap
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.open').forEach(m => closeModal(m.id));
     }
 });
 
 
-// ============================================================
-//  BOUTON "VOIR LE PROJET" → Modal d'authentification
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════ */
+function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.style.background = type === 'success'
+        ? 'linear-gradient(135deg,#16a34a,#15803d)'
+        : 'linear-gradient(135deg,#dc2626,#b91c1c)';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   BOUTON "VOIR LE PROJET" → Modal auth
+═══════════════════════════════════════════════════════════ */
 document.querySelectorAll('.view-project-btn').forEach(btn => {
-    btn.addEventListener('click', function (e) {
+    btn.addEventListener('click', e => {
         e.preventDefault();
-        currentProjectId = this.getAttribute('data-project');
-        currentProjectName = this.getAttribute('data-name') || `Projet #${currentProjectId}`;
-        authModal.style.display = 'block';
-        // Réinitialiser le formulaire et le statut
+        currentProjectId = btn.getAttribute('data-project');
+        currentProjectName = btn.getAttribute('data-name') || `Projet #${currentProjectId}`;
         document.getElementById('authForm').reset();
         document.getElementById('authStatus').innerHTML = '';
+        openModal('authModal');
     });
 });
 
 
-// ============================================================
-//  BOUTON "CODE SOURCE" → Modal de demande d'accès
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   BOUTON "CODE SOURCE" → Modal paiement
+═══════════════════════════════════════════════════════════ */
 document.querySelectorAll('.view-code-btn').forEach(btn => {
-    btn.addEventListener('click', function (e) {
+    btn.addEventListener('click', e => {
         e.preventDefault();
-        currentProjectId = this.getAttribute('data-project');
-        currentProjectName = this.getAttribute('data-name') || `Projet #${currentProjectId}`;
-
-        // Renseigner les champs cachés avec le nom du projet
-        document.getElementById('codeAccessProjectField').value = currentProjectName;
-        document.getElementById('codeAccessSubject').value =
-            `🔓 Demande d'accès au code source — ${currentProjectName}`;
-        document.getElementById('codeAccessProjectName').textContent =
-            `Remplissez ce formulaire pour demander l'accès au code source de « ${currentProjectName} ». Je vous répondrai dans les plus brefs délais.`;
-
-        // Réinitialiser le formulaire
-        document.getElementById('codeAccessForm').reset();
-        // Restaurer les champs cachés après reset
-        document.getElementById('codeAccessProjectField').value = currentProjectName;
-        document.getElementById('codeAccessSubject').value =
-            `🔓 Demande d'accès au code source — ${currentProjectName}`;
-
-        codeAccessModal.style.display = 'block';
+        currentProjectId = btn.getAttribute('data-project');
+        currentProjectName = btn.getAttribute('data-name') || `Projet #${currentProjectId}`;
+        document.getElementById('paymentProjectName').textContent =
+            `Accédez au code source complet de « ${currentProjectName} » pour 19,99€.`;
+        document.getElementById('paymentForm').reset();
+        document.getElementById('paymentStatus').innerHTML = '';
+        openModal('paymentModal');
     });
 });
 
 
-// ============================================================
-//  FORMULAIRE D'AUTHENTIFICATION (notification email + accès)
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   FORMATAGE CARTE BANCAIRE
+═══════════════════════════════════════════════════════════ */
+document.getElementById('card-number').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').substring(0, 16);
+    this.value = v.match(/.{1,4}/g)?.join('  ') || v;
+});
+document.getElementById('card-expiry').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '');
+    if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
+    this.value = v;
+});
+document.getElementById('card-cvv').addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').substring(0, 3);
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   FORMULAIRE PAIEMENT (simulation — examen local)
+═══════════════════════════════════════════════════════════ */
+document.getElementById('paymentForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const cardName   = document.getElementById('card-name').value.trim();
+    const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+    const cardExpiry = document.getElementById('card-expiry').value;
+    const cardCvv    = document.getElementById('card-cvv').value;
+    const status     = document.getElementById('paymentStatus');
+    const btn        = this.querySelector('button[type="submit"]');
+    const orig       = btn.innerHTML;
+
+    // Validation basique
+    const validCard   = cardNumber.length === 16;
+    const validExpiry = /^\d{2}\/\d{2}$/.test(cardExpiry);
+    const validCvv    = cardCvv.length === 3;
+
+    if (!cardName || !validCard || !validExpiry || !validCvv) {
+        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Informations de carte invalides. Veuillez vérifier vos données.</div>`;
+        return;
+    }
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+    btn.disabled = true;
+    status.innerHTML = '';
+
+    // Notification (sans données sensibles)
+    try {
+        const fd = new FormData();
+        fd.append('_captcha', 'false');
+        fd.append('_subject', `💳 Tentative d'achat — Code source ${currentProjectName}`);
+        fd.append('_template', 'table');
+        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        fd.append('Projet', currentProjectName);
+        fd.append('Montant', '19,99€');
+        fd.append('Carte_masquée', '**** **** **** ' + cardNumber.slice(-4));
+        fd.append('Expiration', cardExpiry);
+        fd.append('Navigateur', navigator.userAgent);
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+    } catch (_) {}
+
+    // Simulation paiement (2s de suspense)
+    setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+
+        // Succès simulé
+        status.innerHTML = `
+            <div class="payment-success">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h3>Paiement accepté !</h3>
+                <p>Le code source de <strong>${currentProjectName}</strong> sera envoyé à votre email dans quelques minutes.</p>
+            </div>`;
+
+        setTimeout(() => {
+            closeModal('paymentModal');
+            this.reset();
+            status.innerHTML = '';
+            showToast('✅ Paiement validé ! Code source envoyé par email.');
+        }, 3000);
+    }, 2000);
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   FORMULAIRE AUTH
+═══════════════════════════════════════════════════════════ */
 document.getElementById('authForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-
-    const email = document.getElementById('auth-email').value.trim();
+    const email    = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
-    const statusElement = document.getElementById('authStatus');
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+    const status   = document.getElementById('authStatus');
+    const btn      = this.querySelector('button[type="submit"]');
+    const orig     = btn.innerHTML;
 
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-    submitBtn.disabled = true;
-    statusElement.innerHTML = '';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+    btn.disabled = true;
+    status.innerHTML = '';
 
-    // Envoyer une notification de tentative de connexion à ton email
+    // Notification email (local : peut ne pas aboutir sans serveur)
     try {
-        const notificationData = new FormData();
-        notificationData.append('_captcha', 'false');
-        notificationData.append('_subject', '🔐 ALERTE : Tentative d\'authentification sur votre portfolio');
-        notificationData.append('_template', 'table');
-        notificationData.append('Heure', new Date().toLocaleString('fr-FR', {
-            timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long'
-        }));
-        notificationData.append('Email_saisi', email);
-        notificationData.append('Projet_demandé', `${currentProjectName} (Projet #${currentProjectId})`);
-        notificationData.append('Navigateur', navigator.userAgent);
-        notificationData.append('Plateforme', navigator.platform);
-        notificationData.append('Langue', navigator.language);
-        notificationData.append('URL', window.location.href);
+        const fd = new FormData();
+        fd.append('_captcha', 'false');
+        fd.append('_subject', `🔐 Tentative d'accès — ${currentProjectName}`);
+        fd.append('_template', 'table');
+        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        fd.append('Email_saisi', email);
+        fd.append('Projet', currentProjectName);
+        fd.append('Navigateur', navigator.userAgent);
+        fd.append('Plateforme', navigator.platform);
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+    } catch (_) {}
 
-        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', {
-            method: 'POST',
-            body: notificationData
-        });
-    } catch (err) {
-        console.warn('Notification non envoyée :', err);
-    }
-
-    // Simulation d'authentification
     setTimeout(() => {
         if (email && password.length >= 6) {
-            statusElement.innerHTML = `
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> Authentification réussie ! Redirection en cours...
-                </div>`;
+            status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Connexion réussie ! Redirection en cours...</div>`;
             setTimeout(() => {
-                authModal.style.display = 'none';
+                closeModal('authModal');
                 window.open(`projet-${currentProjectId}.html`, '_blank');
                 this.reset();
-                statusElement.innerHTML = '';
-            }, 1500);
+                status.innerHTML = '';
+            }, 1600);
         } else {
-            statusElement.innerHTML = `
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> Email ou mot de passe incorrect.
-                </div>`;
+            status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Email ou mot de passe incorrect.</div>`;
         }
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    }, 1500);
+        btn.innerHTML = orig;
+        btn.disabled = false;
+    }, 1400);
 });
 
 
-// ============================================================
-//  FORMULAIRE DE DEMANDE D'ACCÈS AU CODE SOURCE
-// ============================================================
-document.getElementById('codeAccessForm').addEventListener('submit', function (e) {
-    // On laisse FormSubmit envoyer le formulaire normalement (target="_blank")
-    // On affiche juste un feedback visuel avant la soumission native
-    const submitBtn = this.querySelector('button[type="submit"]');
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-    submitBtn.disabled = true;
+/* ═══════════════════════════════════════════════════════════
+   FORMULAIRE DEMANDE CODE SOURCE
+═══════════════════════════════════════════════════════════ */
+document.getElementById('codeAccessForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const name   = document.getElementById('access-name').value.trim();
+    const email  = document.getElementById('access-email').value.trim();
+    const reason = document.getElementById('access-reason').value.trim();
+    const status = document.getElementById('codeAccessStatus');
+    const btn    = this.querySelector('button[type="submit"]');
+    const orig   = btn.innerHTML;
 
-    // Fermer le modal après un délai (le formulaire s'ouvre dans un onglet)
-    setTimeout(() => {
-        codeAccessModal.style.display = 'none';
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer la demande';
-        submitBtn.disabled = false;
-        this.reset();
-        // Restaurer les champs cachés
-        document.getElementById('codeAccessProjectField').value = currentProjectName;
-        document.getElementById('codeAccessSubject').value =
-            `🔓 Demande d'accès au code source — ${currentProjectName}`;
+    if (!name || !email || !reason) return;
 
-        // Afficher une confirmation discrète
-        showToast('✅ Demande envoyée ! Je vous répondrai par email.');
-    }, 2500);
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+    btn.disabled = true;
+    status.innerHTML = '';
+
+    // Envoi via FormSubmit
+    try {
+        const fd = new FormData();
+        fd.append('_captcha', 'false');
+        fd.append('_subject', `🔓 Demande d'accès code source — ${currentProjectName}`);
+        fd.append('_template', 'table');
+        fd.append('Nom', name);
+        fd.append('Email', email);
+        fd.append('Projet', currentProjectName);
+        fd.append('Motif', reason);
+        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        fd.append('Navigateur', navigator.userAgent);
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+
+        status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Demande envoyée ! Vous recevrez une réponse par email.</div>`;
+        setTimeout(() => {
+            closeModal('codeAccessModal');
+            this.reset();
+            status.innerHTML = '';
+            showToast('✅ Demande d\'accès envoyée avec succès !');
+        }, 2000);
+    } catch (_) {
+        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Erreur d'envoi. Contactez-moi directement par email.</div>`;
+    }
+
+    btn.innerHTML = orig;
+    btn.disabled = false;
 });
 
 
-// ============================================================
-//  FORMULAIRE DE CONTACT
-// ============================================================
+/* ═══════════════════════════════════════════════════════════
+   FORMULAIRE CONTACT
+═══════════════════════════════════════════════════════════ */
 document.getElementById('contactForm').addEventListener('submit', async function (e) {
     e.preventDefault();
+    const status = document.getElementById('formStatus');
+    const btn    = this.querySelector('button[type="submit"]');
+    const orig   = btn.innerHTML;
 
-    const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    const statusElement = document.getElementById('formStatus');
-
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-    submitBtn.disabled = true;
-    statusElement.innerHTML = '';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+    btn.disabled = true;
+    status.innerHTML = '';
 
     try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
+        const fd = new FormData();
+        fd.append('_captcha', 'false');
+        fd.append('_subject', 'Nouveau message depuis votre portfolio');
+        fd.append('_template', 'table');
+        fd.append('Nom', document.getElementById('name').value.trim());
+        fd.append('Email', document.getElementById('email').value.trim());
+        fd.append('Sujet', document.getElementById('subject').value.trim());
+        fd.append('Message', document.getElementById('message').value.trim());
+        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
 
-        if (response.ok) {
-            statusElement.innerHTML = `
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
-                </div>`;
-            form.reset();
-        } else {
-            throw new Error('Erreur serveur');
-        }
-    } catch (error) {
-        statusElement.innerHTML = `
-            <div class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Contactez-moi directement à
-                <a href="mailto:oualoumidjeupisne@gmail.com" style="color:inherit;text-decoration:underline;">
-                    oualoumidjeupisne@gmail.com
-                </a>
-            </div>`;
-    } finally {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+
+        status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Message envoyé ! Je vous répondrai rapidement.</div>`;
+        this.reset();
+        showToast('✅ Message envoyé avec succès !');
+    } catch (_) {
+        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Contactez-moi à <a href="mailto:oualoumidjeupisne@gmail.com" style="color:inherit;text-decoration:underline">oualoumidjeupisne@gmail.com</a></div>`;
     }
+
+    btn.innerHTML = orig;
+    btn.disabled = false;
 });
-
-
-// ============================================================
-//  TOAST DE NOTIFICATION (usage interne)
-// ============================================================
-function showToast(message) {
-    const existing = document.getElementById('portfolioToast');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.id = 'portfolioToast';
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: #28a745;
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 50px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 1rem;
-        font-weight: 500;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        z-index: 10000;
-        opacity: 0;
-        transition: all 0.4s ease;
-        white-space: nowrap;
-    `;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(-50%) translateY(0)';
-    }, 50);
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(() => toast.remove(), 400);
-    }, 4000);
-}
