@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | DJEUPISNE Oualoumi - Développeur Full Stack</title>
     <meta name="description" content="Portfolio professionnel de DJEUPISNE Oualoumi, Développeur Full Stack et Designer UI/UX basé à Lomé, Togo.">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -38,7 +38,7 @@
             </svg>
         </div>
     </header>
-    
+
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
@@ -56,7 +56,7 @@
             </div>
         </div>
     </nav>
-    
+
     <!-- About Section -->
     <section id="about" class="section-padding">
         <h2 class="section-title" data-aos="fade-up">À propos de moi</h2>
@@ -85,9 +85,15 @@
                     <span class="skill">Java</span>
                     <span class="skill">C</span>
                     <span class="skill">Spring-Boot</span>
-                    <span class="skill">Xml/kotlin</span>
+                    <span class="skill">Xml/Kotlin</span>
                     <span class="skill">WordPress</span>
                     <span class="skill">Responsive Design</span>
+                </div>
+                <!-- CV Download Button -->
+                <div class="cv-download" data-aos="fade-up" data-aos-delay="200">
+                    <a href="cv.pdf" download="CV_DJEUPISNE_Oualoumi.pdf" class="cv-btn">
+                        <i class="fas fa-file-pdf"></i> Télécharger mon CV
+                    </a>
                 </div>
             </div>
             <div class="about-img" data-aos="fade-left">
@@ -95,11 +101,12 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Projects Section -->
     <section id="projects" class="section-padding">
         <h2 class="section-title" data-aos="fade-up">Mes Projets</h2>
         <div class="projects-grid">
+
             <div class="project-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="project-img">
                     <img src="bar.png" alt="Projet 1">
@@ -108,12 +115,16 @@
                     <h3>Application de réservation de billet</h3>
                     <p>Notre application d'agence de voyage en ligne vous connecte aux meilleures destinations, aux offres exclusives et à une expérience de réservation fluide et sécurisée.</p>
                     <div class="project-links">
-                        <a href="#" class="view-project-btn" data-project="1"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#" class="view-code-btn" data-project="1"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="1" data-name="Application de réservation de billet">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                        <a href="#" class="view-code-btn" data-project="1" data-name="Application de réservation de billet">
+                            <i class="fab fa-github"></i> Code source
+                        </a>
                     </div>
                 </div>
             </div>
-            
+
             <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="project-img">
                     <img src="rel.png" alt="Projet 2">
@@ -122,110 +133,112 @@
                     <h3>Application d'Agence de voyage</h3>
                     <p>Notre application transforme vos rêves d'évasion en réalité. Grâce à une interface intuitive et des suggestions personnalisées, partez à la découverte du monde sans stress.</p>
                     <div class="project-links">
-                        <a href="#" class="view-project-btn" data-project="2"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#" class="view-code-btn" data-project="2"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="2" data-name="Application d'Agence de voyage">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                        <a href="#" class="view-code-btn" data-project="2" data-name="Application d'Agence de voyage">
+                            <i class="fab fa-github"></i> Code source
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="project-img">
-                    <img src="baymore.png" alt="Projet 4">
+                    <img src="baymore.png" alt="Projet 3">
                 </div>
                 <div class="project-info">
                     <h3>Application de shopping en ligne</h3>
-                    <p>BAY MORE est votre destination shopping en ligne, offrant des produits exceptionnels à prix imbattables. Avec une interface moderne et intuitive,gérez facilement vos achats et bénéficiez d’une expérience rapide, agréable et sécurisée.</p>
+                    <p>BAY MORE est votre destination shopping en ligne, offrant des produits exceptionnels à prix imbattables. Avec une interface moderne et intuitive, gérez facilement vos achats et bénéficiez d'une expérience rapide, agréable et sécurisée.</p>
                     <div class="project-links">
-                        <a href="#" class="view-project-btn" data-project="2"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#" class="view-code-btn" data-project="2"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="3" data-name="Application de shopping en ligne (BAY MORE)">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                        <a href="#" class="view-code-btn" data-project="3" data-name="Application de shopping en ligne (BAY MORE)">
+                            <i class="fab fa-github"></i> Code source
+                        </a>
                     </div>
                 </div>
             </div>
-            
+
             <div class="project-card" data-aos="fade-up" data-aos-delay="300">
                 <div class="project-img">
-                    <img src="bay.png" alt="Projet 3">
+                    <img src="bay.png" alt="Projet 4">
                 </div>
                 <div class="project-info">
                     <h3>Application de gestion club vidéo</h3>
                     <p>Notre application vous permet de suivre les abonnés, les cassettes, les emprunts et les retours en temps réel. Grâce à une interface intuitive et des fonctionnalités automatisées, vous gagnez du temps et évitez les erreurs.</p>
                     <div class="project-links">
-                        <a href="#" class="view-project-btn" data-project="3"><i class="fas fa-external-link-alt"></i> Voir le projet</a>
-                        <a href="#" class="view-code-btn" data-project="3"><i class="fab fa-github"></i> Code source</a>
+                        <a href="#" class="view-project-btn" data-project="4" data-name="Application de gestion club vidéo">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                        <a href="#" class="view-code-btn" data-project="4" data-name="Application de gestion club vidéo">
+                            <i class="fab fa-github"></i> Code source
+                        </a>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
-    
+
     <!-- Contact Section -->
     <section id="contact" class="section-padding">
         <h2 class="section-title" data-aos="fade-up">Contactez-moi</h2>
         <div class="contact-container">
             <div class="contact-info">
                 <div class="contact-item" data-aos="fade-right" data-aos-delay="100">
-                    <div class="contact-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                     <div class="contact-text">
                         <h3>Email</h3>
                         <a href="mailto:oualoumidjeupisne@gmail.com">oualoumidjeupisne@gmail.com</a>
                     </div>
                 </div>
-                
                 <div class="contact-item" data-aos="fade-right" data-aos-delay="200">
-                    <div class="contact-icon">
-                        <i class="fas fa-phone"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
                     <div class="contact-text">
                         <h3>Téléphone</h3>
                         <a href="tel:+22893360150">+228 93 36 01 50</a>
                     </div>
                 </div>
-                
                 <div class="contact-item" data-aos="fade-right" data-aos-delay="300">
-                    <div class="contact-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                     <div class="contact-text">
                         <h3>Localisation</h3>
                         <p>Togo, Lomé</p>
                     </div>
                 </div>
             </div>
-            
+
             <div class="contact-form" data-aos="fade-left" data-aos-delay="100">
+                <!-- Action FormSubmit vers ton email -->
                 <form id="contactForm" action="https://formsubmit.co/oualoumidjeupisne@gmail.com" method="POST">
                     <input type="text" name="_honey" style="display:none">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_next" value="https://djeupisne.vercel.app/merci.html">
                     <input type="hidden" name="_subject" value="Nouveau message depuis votre portfolio">
-                    
+
                     <div class="form-group">
                         <label for="name">Nom complet</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" placeholder="Votre nom" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="message">Votre message</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
+                        <textarea id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
                     </div>
-                    
                     <button type="submit" class="submit-btn">
                         <i class="fas fa-paper-plane"></i> Envoyer le message
                     </button>
-                    
                     <div id="formStatus"></div>
                 </form>
             </div>
         </div>
     </section>
-    
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -237,7 +250,9 @@
                 <a href="#about">À propos</a>
                 <a href="#projects">Projets</a>
                 <a href="#contact">Contact</a>
-                <a href="cv.pdf" download>Télécharger mon CV</a>
+                <a href="cv.pdf" download="CV_DJEUPISNE_Oualoumi.pdf">
+                    <i class="fas fa-download"></i> Télécharger mon CV
+                </a>
             </div>
             <div class="footer-social">
                 <a href="https://github.com/votreprofil" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
@@ -248,33 +263,33 @@
             <p class="footer-copyright">© <span id="year"></span> DJEUPISNE Oualoumi. Tous droits réservés.</p>
         </div>
     </footer>
-    
+
     <!-- Back to Top Button -->
     <div class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
-    
+
     <!-- Protection Overlay -->
     <div class="protection-overlay">
         <i class="fas fa-lock"></i>
         <h2>Action non autorisée</h2>
         <p>L'inspection de ce portfolio est désactivée pour des raisons de protection.</p>
     </div>
-    
-    <!-- Modal d'authentification -->
+
+    <!-- Modal : Authentification pour "Voir le projet" -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2><i class="fas fa-lock"></i> Authentification requise</h2>
-            <p>Veuillez vous connecter pour accéder à ce projet</p>
+            <p>Veuillez vous connecter pour accéder à ce projet.</p>
             <form id="authForm">
                 <div class="form-group">
                     <label for="auth-email">Email</label>
-                    <input type="email" id="auth-email" required>
+                    <input type="email" id="auth-email" placeholder="votre@email.com" required>
                 </div>
                 <div class="form-group">
                     <label for="auth-password">Mot de passe</label>
-                    <input type="password" id="auth-password" required>
+                    <input type="password" id="auth-password" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-sign-in-alt"></i> Se connecter
@@ -283,47 +298,41 @@
             </form>
         </div>
     </div>
-    
-    <!-- Modal de paiement -->
-    <div id="paymentModal" class="modal">
+
+    <!-- Modal : Demande d'accès au code source -->
+    <div id="codeAccessModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-credit-card"></i> Paiement sécurisé</h2>
-            <p>Accédez au code source pour 19,99€</p>
-            <form id="paymentForm">
+            <h2><i class="fab fa-github"></i> Demande d'accès au code source</h2>
+            <p id="codeAccessProjectName">Remplissez ce formulaire pour demander l'accès au code source. Je vous répondrai dans les plus brefs délais.</p>
+            <form id="codeAccessForm" action="https://formsubmit.co/oualoumidjeupisne@gmail.com" method="POST" target="_blank">
+                <input type="text" name="_honey" style="display:none">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_subject" id="codeAccessSubject" value="Demande d'accès au code source">
+                <input type="hidden" name="projet" id="codeAccessProjectField" value="">
+
                 <div class="form-group">
-                    <label for="card-name">Nom sur la carte</label>
-                    <input type="text" id="card-name" required>
+                    <label for="access-name">Nom complet</label>
+                    <input type="text" id="access-name" name="nom" placeholder="Votre nom" required>
                 </div>
                 <div class="form-group">
-                    <label for="card-number">Numéro de carte</label>
-                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    <label for="access-email">Email</label>
+                    <input type="email" id="access-email" name="email" placeholder="votre@email.com" required>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="card-expiry">Date d'expiration</label>
-                        <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="card-cvv">CVV</label>
-                        <input type="text" id="card-cvv" placeholder="123" maxlength="3" required>
-                    </div>
-                </div>
-                <div class="payment-total">
-                    <span>Total:</span>
-                    <strong>19,99€</strong>
+                <div class="form-group">
+                    <label for="access-reason">Motif de la demande</label>
+                    <textarea id="access-reason" name="motif" rows="4" placeholder="Expliquez brièvement pourquoi vous souhaitez accéder à ce code source..." required></textarea>
                 </div>
                 <button type="submit" class="submit-btn">
-                    <i class="fas fa-lock"></i> Payer maintenant
+                    <i class="fas fa-paper-plane"></i> Envoyer la demande
                 </button>
-                <div id="paymentStatus"></div>
+                <p class="modal-note"><i class="fas fa-info-circle"></i> Votre demande sera examinée et une réponse vous sera envoyée par email.</p>
             </form>
         </div>
     </div>
-    
+
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-
