@@ -7,7 +7,7 @@
 ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
     emailjs_public_key:  'lHZxVLfk008tn4vdi',
-    emailjs_service_id:  'service_XXXXXXX',     // ← REMPLACEZ PAR VOTRE VRAI ID
+    emailjs_service_id:  'service_ih9utt5',     // ← REMPLACEZ PAR VOTRE VRAI ID
     emailjs_template_id: 'template_k6mivvs',
 
     auth: {
