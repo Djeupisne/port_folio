@@ -1,31 +1,23 @@
 /* ═══════════════════════════════════════════════════════════
    ⚙️  CONFIGURATION — MODIFIEZ CES VALEURS
-═══════════════════════════════════════════════════════════
-
-   📌 ÉTAPES EMAILJS (5 minutes) :
-   1. Allez sur https://www.emailjs.com → créez un compte gratuit
-   2. "Add New Service" → Gmail → connectez votre Gmail → copiez le Service ID
-   3. "Create New Template" → copiez le Template ID
-      Dans le template EmailJS, ajoutez ces variables :
-        Sujet  : {{subject}}
-        De     : {{from_name}} ({{from_email}})
-        Corps  : {{message}}
-        À      : {{to_email}}
-   4. "Account" → copiez votre Public Key
-   5. Remplacez les 3 valeurs VOTRE_... ci-dessous
-
 ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
-    emailjs_public_key:  'lHZxVLfk008tn4vdi',   // ← Account > API Keys > Public Key
-    emailjs_service_id:  'Oualoumi Service',   // ← Email Services > service_xxxxxxx
-    emailjs_template_id: 'template_k6mivvs',  // ← Email Templates > template_xxxxxxx
+    // ✅ Tes vraies clés EmailJS
+    emailjs_public_key:  'lHZxVLfk008tn4vdi',
+
+    // ⚠️  'Oualoumi Service' est le NOM, pas l'ID !
+    // → Va sur EmailJS > "Services de messagerie" > tu verras sous le nom
+    //   un identifiant du type  service_abc1234  → mets-le ici
+    emailjs_service_id:  'service_ih9utt5',        // ← REMPLACE PAR LE VRAI ID
+
+    emailjs_template_id: 'template_k6mivvs',       // ✅ correct
 
     // 🔐 Identifiants pour "Voir le projet"
     auth: {
-        email:    'admin@portfolio.com',        // ← changez votre email de connexion
-        password: 'djeupisne2025'               // ← changez votre mot de passe
+        email:    'admin@portfolio.com',
+        password: 'djeupisne2025'
     },
-    email: 'oualoumidjeupisne@gmail.com'        // ← votre email de réception
+    email: 'oualoumidjeupisne@gmail.com'
 };
 
 
@@ -70,23 +62,38 @@ AOS.init({ duration: 750, easing: 'ease-out-cubic', once: true, offset: 80 });
 
 
 /* ═══════════════════════════════════════════════════════════
-   EMAILJS — Chargement dynamique
+   EMAILJS — Chargement + auto-test
 ═══════════════════════════════════════════════════════════ */
 let emailJSReady = false;
 
 (function () {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    s.onload = () => { emailjs.init(CONFIG.emailjs_public_key); emailJSReady = true; };
-    s.onerror = () => console.warn('EmailJS non chargé (vérifiez votre connexion internet)');
+    s.onload = () => {
+        emailjs.init(CONFIG.emailjs_public_key);
+        emailJSReady = true;
+        console.log('%c✅ EmailJS chargé et initialisé', 'color:green;font-weight:bold');
+
+        // ── Auto-test de configuration au chargement ──────────────
+        if (CONFIG.emailjs_service_id === 'service_XXXXXXX') {
+            console.warn('%c⚠️  SERVICE ID non configuré ! Remplace "service_XXXXXXX" dans CONFIG.', 'color:orange;font-weight:bold');
+        }
+    };
+    s.onerror = () => console.error('%c❌ EmailJS non chargé — vérifiez votre connexion internet', 'color:red;font-weight:bold');
     document.head.appendChild(s);
 })();
 
 function sendEmail(params) {
     return new Promise((resolve, reject) => {
-        if (!emailJSReady) { reject(new Error('EmailJS non prêt')); return; }
+        if (!emailJSReady) {
+            console.error('❌ EmailJS pas encore prêt');
+            reject(new Error('EmailJS non prêt'));
+            return;
+        }
+        console.log('📤 Envoi EmailJS vers service:', CONFIG.emailjs_service_id, '| template:', CONFIG.emailjs_template_id);
         emailjs.send(CONFIG.emailjs_service_id, CONFIG.emailjs_template_id, params)
-            .then(resolve).catch(reject);
+            .then(r => { console.log('%c✅ Email envoyé ! Status:', 'color:green', r.status, r.text); resolve(r); })
+            .catch(e => { console.error('%c❌ Erreur EmailJS:', 'color:red', e); reject(e); });
     });
 }
 
@@ -275,7 +282,7 @@ document.getElementById('card-cvv').addEventListener('input',function(){
 
 
 /* ═══════════════════════════════════════════════════════════
-   FORMULAIRE AUTH ✅
+   FORMULAIRE AUTH
 ═══════════════════════════════════════════════════════════ */
 document.getElementById('authForm').addEventListener('submit', async function(e){
     e.preventDefault();
@@ -286,6 +293,7 @@ document.getElementById('authForm').addEventListener('submit', async function(e)
     const orig=btn.innerHTML;
     btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Vérification...'; btn.disabled=true; status.innerHTML='';
 
+    // Notification silencieuse
     try {
         await sendEmail({
             to_email: CONFIG.email,
@@ -308,8 +316,7 @@ document.getElementById('authForm').addEventListener('submit', async function(e)
 
 
 /* ═══════════════════════════════════════════════════════════
-   FORMULAIRE PAIEMENT ✅
-   → Envoie email via EmailJS avec les 4 derniers chiffres uniquement
+   FORMULAIRE PAIEMENT
 ═══════════════════════════════════════════════════════════ */
 document.getElementById('paymentForm').addEventListener('submit', async function(e){
     e.preventDefault();
@@ -321,7 +328,6 @@ document.getElementById('paymentForm').addEventListener('submit', async function
     const btn = this.querySelector('button[type="submit"]');
     const orig = btn.innerHTML;
 
-    // Validation
     if(!cardName || cardNumber.length!==16 || !/^\d{2}\/\d{2}$/.test(cardExpiry) || cardCvv.length!==3){
         status.innerHTML=`<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Informations invalides. Vérifiez tous les champs.</div>`;
         return;
@@ -329,7 +335,6 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 
     btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Traitement...'; btn.disabled=true; status.innerHTML='';
 
-    // ✅ Email via EmailJS — 4 derniers chiffres seulement
     try {
         await sendEmail({
             to_email:   CONFIG.email,
@@ -338,18 +343,14 @@ document.getElementById('paymentForm').addEventListener('submit', async function
             from_email: CONFIG.email,
             message:
                 `=== ACHAT CODE SOURCE ===\n` +
-                `Projet : ${currentProjectName}\n` +
-                `Montant : 19,99€\n` +
+                `Projet : ${currentProjectName}\nMontant : 19,99€\n` +
                 `Titulaire : ${cardName}\n` +
                 `Carte masquée : **** **** **** ${cardNumber.slice(-4)}\n` +
                 `Expiration : ${cardExpiry}\n` +
                 `Date/Heure : ${new Date().toLocaleString('fr-FR')}\n` +
                 `Navigateur : ${navigator.userAgent}`,
         });
-        console.log('✅ Notification paiement envoyée');
-    } catch(err){
-        console.warn('EmailJS erreur:', err.text||err);
-    }
+    } catch(err){ console.warn('EmailJS paiement:', err); }
 
     setTimeout(()=>{
         btn.innerHTML=orig; btn.disabled=false;
@@ -365,8 +366,7 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 
 
 /* ═══════════════════════════════════════════════════════════
-   FORMULAIRE CONTACT ✅
-   → Envoie directement dans votre boîte Gmail via EmailJS
+   FORMULAIRE CONTACT
 ═══════════════════════════════════════════════════════════ */
 document.getElementById('contactForm').addEventListener('submit', async function(e){
     e.preventDefault();
@@ -392,8 +392,18 @@ document.getElementById('contactForm').addEventListener('submit', async function
         this.reset();
         showToast('✅ Message envoyé !');
     } catch(err){
-        console.error('EmailJS:', err);
-        status.innerHTML=`<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Échec. Écrivez directement à <a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:underline">${CONFIG.email}</a></div>`;
+        console.error('Erreur contact EmailJS:', err);
+        // Fallback mailto si EmailJS échoue
+        const subj = encodeURIComponent(`[Portfolio] ${sujet} — de ${nom}`);
+        const body = encodeURIComponent(`Nom : ${nom}\nEmail : ${email}\n\nMessage :\n${message}`);
+        status.innerHTML=`<div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> 
+            EmailJS indisponible. 
+            <a href="mailto:${CONFIG.email}?subject=${subj}&body=${body}" 
+               style="color:inherit;text-decoration:underline;font-weight:700">
+               Cliquez ici pour envoyer via votre boîte mail
+            </a>
+        </div>`;
     }
     btn.innerHTML=orig; btn.disabled=false;
 });
@@ -414,7 +424,8 @@ document.getElementById('codeAccessForm')?.addEventListener('submit', async func
 
     try {
         await sendEmail({
-            to_email: CONFIG.email, subject:`🔓 Demande accès — ${currentProjectName}`,
+            to_email: CONFIG.email,
+            subject:`🔓 Demande accès — ${currentProjectName}`,
             from_name: name, from_email: email,
             message:`Nom:${name}\nEmail:${email}\nProjet:${currentProjectName}\nMotif:${reason}`,
         });
