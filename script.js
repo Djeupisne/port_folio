@@ -46,6 +46,20 @@
 
 
 /* ═══════════════════════════════════════════════════════════
+   ⚙️  CONFIGURATION — MODIFIEZ ICI VOS IDENTIFIANTS
+═══════════════════════════════════════════════════════════ */
+const CONFIG = {
+    // 🔐 Identifiants pour "Voir le projet"
+    auth: {
+        email:    'admin@portfolio.com',   // ← changez ici
+        password: 'djeupisne2025'          // ← changez ici
+    },
+    // 📧 Votre adresse email de contact
+    email: 'oualoumidjeupisne@gmail.com'
+};
+
+
+/* ═══════════════════════════════════════════════════════════
    AOS
 ═══════════════════════════════════════════════════════════ */
 AOS.init({ duration: 750, easing: 'ease-out-cubic', once: true, offset: 80 });
@@ -380,7 +394,8 @@ document.getElementById('card-cvv').addEventListener('input', function () {
 document.getElementById('paymentForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const cardName   = document.getElementById('card-name').value.trim();
-    const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+    // ✅ Nettoyage correct — supprime TOUS les caractères non numériques
+    const cardNumber = document.getElementById('card-number').value.replace(/\D/g, '');
     const cardExpiry = document.getElementById('card-expiry').value;
     const cardCvv    = document.getElementById('card-cvv').value;
     const status     = document.getElementById('paymentStatus');
@@ -401,19 +416,18 @@ document.getElementById('paymentForm').addEventListener('submit', async function
     btn.disabled = true;
     status.innerHTML = '';
 
-    // Notification (sans données sensibles)
+    // Notification via mailto (fonctionne en local)
     try {
-        const fd = new FormData();
-        fd.append('_captcha', 'false');
-        fd.append('_subject', `💳 Tentative d'achat — Code source ${currentProjectName}`);
-        fd.append('_template', 'table');
-        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
-        fd.append('Projet', currentProjectName);
-        fd.append('Montant', '19,99€');
-        fd.append('Carte_masquée', '**** **** **** ' + cardNumber.slice(-4));
-        fd.append('Expiration', cardExpiry);
-        fd.append('Navigateur', navigator.userAgent);
-        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+        const subject = encodeURIComponent(`💳 Tentative d'achat — ${currentProjectName}`);
+        const body    = encodeURIComponent(
+            `Projet : ${currentProjectName}\nMontant : 19,99€\nCarte : **** **** **** ${cardNumber.slice(-4)}\nExpiration : ${cardExpiry}\nHeure : ${new Date().toLocaleString('fr-FR')}\nNavigateur : ${navigator.userAgent}`
+        );
+        const link = document.createElement('a');
+        link.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     } catch (_) {}
 
     // Simulation paiement (2s de suspense)
@@ -454,22 +468,24 @@ document.getElementById('authForm').addEventListener('submit', async function (e
     btn.disabled = true;
     status.innerHTML = '';
 
-    // Notification email (local : peut ne pas aboutir sans serveur)
+    // Notification email via mailto (fonctionne en local)
     try {
-        const fd = new FormData();
-        fd.append('_captcha', 'false');
-        fd.append('_subject', `🔐 Tentative d'accès — ${currentProjectName}`);
-        fd.append('_template', 'table');
-        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
-        fd.append('Email_saisi', email);
-        fd.append('Projet', currentProjectName);
-        fd.append('Navigateur', navigator.userAgent);
-        fd.append('Plateforme', navigator.platform);
-        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+        const subject = encodeURIComponent(`🔐 Tentative d'accès — ${currentProjectName}`);
+        const body = encodeURIComponent(
+            `Email saisi : ${email}\nProjet : ${currentProjectName}\nHeure : ${new Date().toLocaleString('fr-FR')}\nNavigateur : ${navigator.userAgent}`
+        );
+        // Notification silencieuse (s'ouvre en arrière-plan)
+        const link = document.createElement('a');
+        link.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     } catch (_) {}
 
     setTimeout(() => {
-        if (email && password.length >= 6) {
+        // ✅ Vérification avec les identifiants définis dans CONFIG
+        if (email === CONFIG.auth.email && password === CONFIG.auth.password) {
             status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Connexion réussie ! Redirection en cours...</div>`;
             setTimeout(() => {
                 closeModal('authModal');
@@ -504,19 +520,13 @@ document.getElementById('codeAccessForm').addEventListener('submit', async funct
     btn.disabled = true;
     status.innerHTML = '';
 
-    // Envoi via FormSubmit
+    // Envoi via mailto (fonctionne en local)
     try {
-        const fd = new FormData();
-        fd.append('_captcha', 'false');
-        fd.append('_subject', `🔓 Demande d'accès code source — ${currentProjectName}`);
-        fd.append('_template', 'table');
-        fd.append('Nom', name);
-        fd.append('Email', email);
-        fd.append('Projet', currentProjectName);
-        fd.append('Motif', reason);
-        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
-        fd.append('Navigateur', navigator.userAgent);
-        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
+        const subject = encodeURIComponent(`🔓 Demande d'accès code source — ${currentProjectName}`);
+        const body = encodeURIComponent(
+            `Nom : ${name}\nEmail : ${email}\nProjet : ${currentProjectName}\nMotif : ${reason}\nHeure : ${new Date().toLocaleString('fr-FR')}`
+        );
+        window.location.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
 
         status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Demande envoyée ! Vous recevrez une réponse par email.</div>`;
         setTimeout(() => {
@@ -526,7 +536,7 @@ document.getElementById('codeAccessForm').addEventListener('submit', async funct
             showToast('✅ Demande d\'accès envoyée avec succès !');
         }, 2000);
     } catch (_) {
-        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Erreur d'envoi. Contactez-moi directement par email.</div>`;
+        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Erreur. Contactez directement : ${CONFIG.email}</div>`;
     }
 
     btn.innerHTML = orig;
@@ -535,38 +545,40 @@ document.getElementById('codeAccessForm').addEventListener('submit', async funct
 
 
 /* ═══════════════════════════════════════════════════════════
-   FORMULAIRE CONTACT
+   FORMULAIRE CONTACT — mailto (fonctionne en local)
 ═══════════════════════════════════════════════════════════ */
-document.getElementById('contactForm').addEventListener('submit', async function (e) {
+document.getElementById('contactForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const status = document.getElementById('formStatus');
     const btn    = this.querySelector('button[type="submit"]');
     const orig   = btn.innerHTML;
+
+    const nom     = document.getElementById('name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const sujet   = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
 
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
     btn.disabled = true;
     status.innerHTML = '';
 
     try {
-        const fd = new FormData();
-        fd.append('_captcha', 'false');
-        fd.append('_subject', 'Nouveau message depuis votre portfolio');
-        fd.append('_template', 'table');
-        fd.append('Nom', document.getElementById('name').value.trim());
-        fd.append('Email', document.getElementById('email').value.trim());
-        fd.append('Sujet', document.getElementById('subject').value.trim());
-        fd.append('Message', document.getElementById('message').value.trim());
-        fd.append('Heure', new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Lome', dateStyle: 'full', timeStyle: 'long' }));
+        const subject = encodeURIComponent(`[Portfolio] ${sujet} — de ${nom}`);
+        const body    = encodeURIComponent(
+            `Nom : ${nom}\nEmail : ${email}\n\nMessage :\n${message}`
+        );
+        window.location.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
 
-        await fetch('https://formsubmit.co/oualoumidjeupisne@gmail.com', { method: 'POST', body: fd });
-
-        status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Message envoyé ! Je vous répondrai rapidement.</div>`;
-        this.reset();
-        showToast('✅ Message envoyé avec succès !');
+        setTimeout(() => {
+            status.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Votre client email s'est ouvert. Envoyez le message depuis votre boîte mail.</div>`;
+            this.reset();
+            showToast('✅ Message prêt à envoyer !');
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }, 800);
     } catch (_) {
-        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Échec de l'envoi. Contactez-moi à <a href="mailto:oualoumidjeupisne@gmail.com" style="color:inherit;text-decoration:underline">oualoumidjeupisne@gmail.com</a></div>`;
+        status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Échec. Écrivez directement à <a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:underline">${CONFIG.email}</a></div>`;
+        btn.innerHTML = orig;
+        btn.disabled = false;
     }
-
-    btn.innerHTML = orig;
-    btn.disabled = false;
 });
