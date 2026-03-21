@@ -8,7 +8,7 @@ const CONFIG = {
     // ⚠️  'Oualoumi Service' est le NOM, pas l'ID !
     // → Va sur EmailJS > "Services de messagerie" > tu verras sous le nom
     //   un identifiant du type  service_abc1234  → mets-le ici
-    emailjs_service_id:  'service_ih9utt5',        // ← REMPLACE PAR LE VRAI ID
+    emailjs_service_id:  'service_XXXXXXX',        // ← REMPLACE PAR LE VRAI ID
 
     emailjs_template_id: 'template_k6mivvs',       // ✅ correct
 
