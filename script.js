@@ -187,27 +187,30 @@ function sendEmail(params) {
 
 
 /* ═══════════════════════════════════════════════════════════
-   THÈME
+   THÈME — Mode sombre par défaut (futuriste)
 ═══════════════════════════════════════════════════════════ */
 const themeBtn  = document.querySelector('.theme-toggle');
 const themeIcon = themeBtn?.querySelector('i');
 
-if (localStorage.getItem('theme') === 'dark' ||
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.body.setAttribute('data-theme', 'dark');
+// Mode sombre par défaut (thème futuriste)
+if (localStorage.getItem('theme') === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    if (themeIcon) themeIcon.className = 'fas fa-moon';
+} else {
+    // Défaut : dark
     if (themeIcon) themeIcon.className = 'fas fa-sun';
 }
 
 themeBtn?.addEventListener('click', () => {
-    const dark = document.body.getAttribute('data-theme') === 'dark';
-    if (dark) {
+    const light = document.body.getAttribute('data-theme') === 'light';
+    if (light) {
         document.body.removeAttribute('data-theme');
-        if (themeIcon) themeIcon.className = 'fas fa-moon';
-        localStorage.setItem('theme', 'light');
-    } else {
-        document.body.setAttribute('data-theme', 'dark');
         if (themeIcon) themeIcon.className = 'fas fa-sun';
         localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.setAttribute('data-theme', 'light');
+        if (themeIcon) themeIcon.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'light');
     }
 });
 
