@@ -799,6 +799,7 @@ footer {
 .modal-box .form-field input,
 .modal-box .form-field textarea {
     user-select:text !important; -webkit-user-select:text !important;
+    letter-spacing: 0.08em;
 }
 
 /* Payment success */
