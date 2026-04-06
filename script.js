@@ -445,13 +445,21 @@ document.getElementById('paymentForm')?.addEventListener('submit', async functio
 ═══════════════════════════════════════════════════════════ */
 document.getElementById('contactForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
-    const status  = document.getElementById('formStatus');
-    const btn     = this.querySelector('button[type="submit"]');
-    const orig    = btn.innerHTML;
+    
+    // Récupération des valeurs
     const nom     = document.getElementById('name').value.trim();
     const email   = document.getElementById('email').value.trim();
     const sujet   = document.getElementById('subject').value.trim();
     const message = document.getElementById('message').value.trim();
+    const status  = document.getElementById('formStatus');
+    const btn     = this.querySelector('button[type="submit"]');
+    const orig    = btn.innerHTML;
+
+    // Validation : vérifier que tous les champs sont remplis
+    if (!nom || !email || !sujet || !message) {
+        status.innerHTML = '<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Veuillez remplir tous les champs obligatoires.</div>';
+        return;
+    }
 
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
     btn.disabled = true; status.innerHTML = '';
