@@ -7,7 +7,7 @@
     <meta name="description" content="Portfolio de DJEUPISNE Oualoumi, Développeur Full Stack & Designer UI/UX, Lomé Togo.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="style.css">
@@ -377,13 +377,13 @@
         <form id="paymentForm" novalidate autocomplete="off">
             <div class="form-field">
                 <label for="card-name">Nom sur la carte</label>
-                <input type="text" id="card-name" placeholder="Jean DUPONT" autocomplete="cc-name" required style="letter-spacing: 0.1em;">
+                <input type="text" id="card-name" placeholder="Jean DUPONT" autocomplete="cc-name" required style="letter-spacing: 0.12em; text-transform: uppercase;">
             </div>
             <div class="form-field">
                 <label for="card-number">Numéro de carte</label>
                 <div class="card-wrap">
                     <input type="text" id="card-number" placeholder="1234  5678  9012  3456"
-                           maxlength="22" inputmode="numeric" autocomplete="cc-number" required style="letter-spacing: 0.15em;">
+                           maxlength="23" inputmode="numeric" autocomplete="cc-number" required style="letter-spacing: 0.25em; font-family: 'Space Mono', monospace;">
                     <div class="card-brands" aria-hidden="true">
                         <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i>
                     </div>
@@ -393,15 +393,15 @@
                 <div class="form-field">
                     <label for="card-expiry">Expiration</label>
                     <input type="text" id="card-expiry" placeholder="MM/AA"
-                           maxlength="5" inputmode="numeric" autocomplete="cc-exp" required style="letter-spacing: 0.12em;">
+                           maxlength="5" inputmode="numeric" autocomplete="cc-exp" required style="letter-spacing: 0.2em; font-family: 'Space Mono', monospace;">
                 </div>
                 <div class="form-field">
                     <label for="card-cvv">
                         CVV <span title="3 chiffres au dos de la carte" style="cursor:help">
                             <i class="fas fa-question-circle"></i></span>
                     </label>
-                    <input type="text" id="card-cvv" placeholder="•••"
-                           maxlength="3" inputmode="numeric" autocomplete="cc-csc" required style="letter-spacing: 0.2em;">
+                    <input type="text" id="card-cvv" placeholder="123"
+                           maxlength="4" inputmode="numeric" autocomplete="cc-csc" required style="letter-spacing: 0.3em; font-family: 'Space Mono', monospace;">
                 </div>
             </div>
             <div class="secure-badge">
